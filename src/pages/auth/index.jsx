@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import {createUserWithEmailAndPassword, onAuthStateChanged} from "firebase/auth"
 import "./styles.css";
-import logo from "./logo_r.png"; // Import the logo image
+import logo from "./logo_r_new.png"; // Import the logo image
 import { updateProfile } from "firebase/auth";
 
 import { useState, useEffect } from "react";
