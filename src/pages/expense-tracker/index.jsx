@@ -7,6 +7,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import logo from "./logo_r.png"; 
+import defaultprofilepic from "./user-icon.png"
 
 //---FUNCTIONS START HERE--- 
 
@@ -98,16 +99,20 @@ export const ExpenseTracker = () => {
    return (
       <>
     <div className="expense-tracker">
-  {profilePhoto && (
+  
     <div className="profile">
-      <div className="profile-photo-container">
-        <img className="profile-photo" src={profilePhoto} alt="Profile Photo" />
-      </div>
-      <button className="sign-out-button" onClick={signUserOut}>
-        Sign Out
-      </button>
-    </div>
-  )}
+  <div className="profile-photo-container">
+    {profilePhoto ? (
+      <img className="profile-photo" src={profilePhoto} alt="Profile bbPhoto" />
+    ) : (
+      <img className="profile-photo" src={defaultprofilepic} alt="Profile asdPhoto" />
+    )}
+  </div>
+  <button className="sign-out-button" onClick={signUserOut}>
+    Sign Out
+  </button>
+</div>
+  
 
    <h2>
     <div className="name">
