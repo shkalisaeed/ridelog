@@ -6,7 +6,7 @@ import "./styles.css";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
-import logo from "./logo_r.png"; 
+import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
 
 //---FUNCTIONS START HERE--- 
@@ -24,57 +24,35 @@ export const ExpenseTracker = () => {
    const [year, setYear] = useState("");
    const [rego, setRego] = useState("");
 
+
+   const [odo_reading, set_Odo_Reading] = useState("");
+   const [tank_size, setTank_Size] = useState("");
+   const [insurance_provider, set_Insurance_Provider] = useState("");
+   const [insurance_type, set_Insurance_Type] = useState("");
+
+
+
+
+
+
    const [description, setDescription] = useState("");
-   const [amount, setAmount] = useState("");
+   const [transactionAmount, setAmount] = useState(0);
    const [transactionType, setTransactionType] = useState("expense");
    //const [expenseType, setExpenseType] = useState("Gas");
-   
-   const handleMakeChange = (e) => {
-      setMake(e.target.value);
-   };
 
    
-   const handleModelChange = (e) => {
-      setModel(e.target.value);
-   };
-
-   const handleYearChange = (e) => {
-      setYear(e.target.value);
-   };
-
-   const handleRegoChange = (e) => {
-      setRego(e.target.value);
-   };
-
-   const handleDescriptionChange = (e) => {
-      setDescription(e.target.value);
-   };
-
-   const handleAmountChange = (e) => {
-      setAmount(e.target.value);
-   };
-
-   const handleTransactionTypeChange = (e) => {
-      setTransactionType(e.target.value);
-   };
-
-   const handleVehicleSubmit = (e) => {
-      e.preventDefault();
-      // Handle vehicle submission here
-      console.log(`Make: ${make}, Model: ${model}, Year: ${year}`);
-   };
 
 
    const handleTransactionSubmit = (e) => {
       e.preventDefault();
       // Handle transaction submission here
-      console.log(`Description: ${description}, Amount: ${amount}, Type: ${transactionType}`);
+      console.log(`Description: ${description}, Amount: ${transactionAmount}, Type: ${transactionType}`);
    };
 
-//TESTING Add Vehicle
+   //TESTING Add Vehicle
    const onSubmit2 = async (e) => {
       e.preventDefault()
-      addVehicle({ make: "Toyota", model: "Axio", year: "2015", rego: "ABC123" })
+      addVehicle({ make, model, year, rego, odo_reading, tank_size, insurance_provider, insurance_type})
    };
 
    //sign out function for user
@@ -88,96 +66,179 @@ export const ExpenseTracker = () => {
       }
    };
 
-//TESTING Add Expense   
+   //TESTING Add Expense   
    const onSubmit = async (e) => {
       e.preventDefault()
-      addTransaction({ description: "Gas BP", transactionAmount: 100, transactionType: "Fuel" })
+      addTransaction({ description, 
+         transactionAmount, 
+         transactionType })
    };
 
 
    //---END OF FUNCTIONS---
    return (
       <>
-    <div className="expense-tracker">
-  
-    <div className="profile">
-  <div className="profile-photo-container">
-    {profilePhoto ? (
-      <img className="profile-photo" src={profilePhoto} alt="Profile bbPhoto" />
-    ) : (
-      <img className="profile-photo" src={defaultprofilepic} alt="Profile asdPhoto" />
-    )}
-  </div>
-  <button className="sign-out-button" onClick={signUserOut}>
-    Sign Out
-  </button>
-</div>
-  
+         <div className="expense-tracker">
 
-   <h2>
-    <div className="name">
-      Welcome {name}
-    </div>
-  </h2>
+            <div className="profile">
+               <div className="profile-photo-container">
+                  {profilePhoto ? (
+                     <img className="profile-photo" src={profilePhoto} alt="Profile bbPhoto" />
+                  ) : (
+                     <img className="profile-photo" src={defaultprofilepic} alt="Profile asdPhoto" />
+                  )}
+               </div>
+               <button className="sign-out-button" onClick={signUserOut}>
+                  Sign Out
+               </button>
+            </div>
+
+
+            <h2>
+               <div className="name">
+                  Welcome {name}
+               </div>
+            </h2>
             <div className="add-vehicle" onSubmit={onSubmit2}>
-            <img src={logo} alt="RIDELOG Logo" style={{ width: "20%" }} />
+               <img src={logo} alt="RIDELOG Logo" style={{ width: "20%" }} />
                <h3>Add Vehicle</h3>
                <form >
-                  <input
-                     type="text"
-                     placeholder="Make"
-                     value={make}
-                     onChange={handleMakeChange}
+                  <div className="form-group">
+                     <label htmlFor="make">Make:</label>
+                     <input
+
+                        type="text"
+                        placeholder="Make"
+
+                        required
+                        onChange= {(e) => setMake(e.target.value)}
+                        
+                     />
+                  </div>
+                  <div className="form-group">
+                     <label htmlFor="model">Model:</label>
+                     <input
+                        type="text"
+                        placeholder="Model"
+                        required
+                        onChange= {(e) => setModel(e.target.value)}
+                        
+                     />
+                  </div>
+                  <div className="form-group">
+                     <label htmlFor="year">Year:</label>
+                     <select id="year" 
                      required
-                  />
-                  <input
-                     type="text"
-                     placeholder="Model"
-                     value={model}
-                     onChange={handleModelChange}
-                     required
-                  />
-                  <label htmlFor="year">Year:</label>
-                  <select id="year" value={year} onChange={handleYearChange}>
-                     {Array.from({ length: new Date().getFullYear() - 1980 + 1 }, (_, i) => 1980 + i).map((year) => (
-                        <option key={year} value={year}>
-                           {year}
-                        </option>
-                     ))}
+                     onChange= {(e) => setYear(e.target.value)}
+                     >
+                        {Array.from({ length: new Date().getFullYear() - 1980 + 1 }, (_, i) => 1980 + i).map((year) => (
+                           <option key={year} value={year}>
+                              {year}
+                           </option>
+                        ))}
+                     </select>
+                  </div>
+                  <div className="form-group">
+                     <label htmlFor="rego">Rego:</label>
+                     <input
+                        type="text"
+                        placeholder="Rego"
+                        required
+                  onChange= {(e) => setRego(e.target.value)}
+                     />
+                  </div>
+                
+                  <div className="form-group">
+                     <label htmlFor="odo">Current Millage (KM):</label>
+                     <input
+                        type="number"
+                        placeholder="odo"
+                        required
+                        onChange= {(e) => set_Odo_Reading(e.target.value)}
+                     />
+                  </div>
+                  <br /> {/* Line break to start a new row */}
+                  <div className="form-group"></div>
+                  <label htmlFor="tanksize">Tank Size (L):</label>
+                  <select
+                  required
+                  onChange= {(e) => setTank_Size(e.target.value)}
+                  >
+                     <option value="30">30</option>
+                     <option value="35">35</option>
+                     <option value="40">40</option>
+                     <option value="45">45</option>
+                     <option value="50">50</option>
+                     <option value="55">55</option>
+                     <option value="60">60</option>
                   </select>
-                  <input
-                     type="text"
-                     placeholder="Rego"
-                     value={rego}
-                     onChange={handleRegoChange}
-                     required
-                  />
+                  <div className="form-group">
+                     <label htmlFor="insurance">Insurance Company:</label>
+                     <select
+                        required
+                        onChange= {(e) => set_Insurance_Provider(e.target.value)}
+                     >
+                        <option value="Allianz">Allianz</option>
+                        <option value="AAMI">AAMI</option>
+                        <option value="Youi">Youi</option>
+                        <option value="Budget Direct">Budget Direct</option>
+                        <option value="Bingle">Bingle</option>
+                        <option value="RACV">RACV</option>
+                        <option value="Woolworths Insurance">Woolworths Insurance</option>
+                        <option value="Coles Insurance">Coles Insurance</option>
+                     </select>
+                  </div>
+                  <div className="form-group">
+                     <label htmlFor="insurancetype">Type Cover:</label>
+                     <select
+                        type="text"
+                        placeholder="Inurance Type"
+                        required
+                        onChange= {(e) => set_Insurance_Type(e.target.value)}
+                     >
+                        <option value="">Select cover type</option>
+                        <option value="Comprehensive">Comprehensive</option>
+                        <option value="Third Party">Third Party</option>
+                     </select>
+                  </div>
                   <button type="submit">Add Vehicle </button>
                </form>
             </div>
             <div className="add-transaction" onSubmit={onSubmit}>
                <h3>Add Expense</h3>
                <form onSubmit={handleTransactionSubmit}>
-                  <input
-                     type="text"
-                     placeholder="Description"
-                     value={description}
-                     onChange={handleDescriptionChange}
-                     required
-                  />
-                  <input
-                     type="number"
-                     placeholder="Amount"
-                     value={amount}
-                     onChange={handleAmountChange}
-                     required
-                  />
-           
+                  <div className="form-group">
+                     <label htmlFor="Expense">Type Expense:</label>
+                     <select
+                        required
+                        onChange= {(e) => setDescription(e.target.value)}
+                     >
+
+                        <option value="">Select an expense type</option>
+                        <option value="Fuel">Fuel</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Insurance">Insurance</option>
+                        <option value="Registration">Registration</option>
+                        <option value="Other">Other</option>
+
+                     </select>
+                  </div>
+                  <div className="form-group">
+                     <input
+                        type="number"
+                        placeholder="Amount"
+
+                        required
+                        onChange= {(e) => setAmount(e.target.value)}
+
+                     />
+                  </div>
+
                   <button type="submit">Add Expense</button>
                </form>
             </div>
          </div>
-         
+
 
          <div className="transactions">
             <h3>Recent Expenses</h3>
