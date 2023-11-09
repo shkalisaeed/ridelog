@@ -10,6 +10,12 @@ export const useAddVehicle = () => {
         model,
         year,
         rego,
+        odo_reading,
+        insurance_provider,
+        insurance_type,
+        tank_size
+
+
     }) => {
         
         await addDoc(vehicleCollectionRef, {
@@ -18,6 +24,10 @@ export const useAddVehicle = () => {
             model,
             year,
             rego,
+            odo_reading,
+            insurance_provider,
+            insurance_type,
+            tank_size,
             createdAt: serverTimestamp(),
 
         });
