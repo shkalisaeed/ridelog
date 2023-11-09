@@ -31,16 +31,12 @@ export const ExpenseTracker = () => {
    const [insurance_type, set_Insurance_Type] = useState("");
 
 
-
-
-
-
    const [description, setDescription] = useState("");
    const [transactionAmount, setAmount] = useState(0);
    const [transactionType, setTransactionType] = useState("expense");
    //const [expenseType, setExpenseType] = useState("Gas");
 
-   
+
 
 
    const handleTransactionSubmit = (e) => {
@@ -52,7 +48,7 @@ export const ExpenseTracker = () => {
    //TESTING Add Vehicle
    const onSubmit2 = async (e) => {
       e.preventDefault()
-      addVehicle({ make, model, year, rego, odo_reading, tank_size, insurance_provider, insurance_type})
+      addVehicle({ make, model, year, rego, odo_reading, tank_size, insurance_provider, insurance_type })
    };
 
    //sign out function for user
@@ -69,9 +65,11 @@ export const ExpenseTracker = () => {
    //TESTING Add Expense   
    const onSubmit = async (e) => {
       e.preventDefault()
-      addTransaction({ description, 
-         transactionAmount, 
-         transactionType })
+      addTransaction({
+         description,
+         transactionAmount,
+         transactionType
+      })
    };
 
 
@@ -104,32 +102,32 @@ export const ExpenseTracker = () => {
                <h3>Add Vehicle</h3>
                <form >
                   <div className="form-group">
-                     <label htmlFor="make">Make:</label>
+                  <label htmlFor="insurance">Car Make:</label>   
                      <input
-
                         type="text"
                         placeholder="Make"
-
                         required
-                        onChange= {(e) => setMake(e.target.value)}
-                        
+                        onChange={(e) => setMake(e.target.value)}
+
                      />
                   </div>
                   <div className="form-group">
-                     <label htmlFor="model">Model:</label>
+                  <label htmlFor="insurance">Car Model:</label>   
                      <input
                         type="text"
                         placeholder="Model"
                         required
-                        onChange= {(e) => setModel(e.target.value)}
-                        
+                        onChange={(e) => setModel(e.target.value)}
+
                      />
                   </div>
                   <div className="form-group">
-                     <label htmlFor="year">Year:</label>
-                     <select id="year" 
-                     required
-                     onChange= {(e) => setYear(e.target.value)}
+                  <label htmlFor="insurance">Year:</label>
+                     <select 
+                      id="year"
+                      
+                        required
+                        onChange={(e) => setYear(e.target.value)}
                      >
                         {Array.from({ length: new Date().getFullYear() - 1980 + 1 }, (_, i) => 1980 + i).map((year) => (
                            <option key={year} value={year}>
@@ -139,31 +137,32 @@ export const ExpenseTracker = () => {
                      </select>
                   </div>
                   <div className="form-group">
-                     <label htmlFor="rego">Rego:</label>
+                     <label htmlFor="rego">Car Rego:</label>
                      <input
                         type="text"
                         placeholder="Rego"
                         required
-                  onChange= {(e) => setRego(e.target.value)}
+                        onChange={(e) => setRego(e.target.value)}
                      />
                   </div>
-                
+
                   <div className="form-group">
                      <label htmlFor="odo">Current Millage (KM):</label>
                      <input
                         type="number"
-                        placeholder="odo"
+                        placeholder="ODO Reading"
                         required
-                        onChange= {(e) => set_Odo_Reading(e.target.value)}
+                        onChange={(e) => set_Odo_Reading(e.target.value)}
                      />
                   </div>
-                  <br /> {/* Line break to start a new row */}
-                  <div className="form-group"></div>
+                  
+                  <div className="form-group">
                   <label htmlFor="tanksize">Tank Size (L):</label>
                   <select
-                  required
-                  onChange= {(e) => setTank_Size(e.target.value)}
+                     required
+                     onChange={(e) => setTank_Size(e.target.value)}
                   >
+                     <option value="">Select Tank Size</option>
                      <option value="30">30</option>
                      <option value="35">35</option>
                      <option value="40">40</option>
@@ -172,12 +171,14 @@ export const ExpenseTracker = () => {
                      <option value="55">55</option>
                      <option value="60">60</option>
                   </select>
+                  </div>
                   <div className="form-group">
                      <label htmlFor="insurance">Insurance Company:</label>
                      <select
                         required
-                        onChange= {(e) => set_Insurance_Provider(e.target.value)}
+                        onChange={(e) => set_Insurance_Provider(e.target.value)}
                      >
+                        <option value="">Select Company</option>
                         <option value="Allianz">Allianz</option>
                         <option value="AAMI">AAMI</option>
                         <option value="Youi">Youi</option>
@@ -194,14 +195,16 @@ export const ExpenseTracker = () => {
                         type="text"
                         placeholder="Inurance Type"
                         required
-                        onChange= {(e) => set_Insurance_Type(e.target.value)}
+                        onChange={(e) => set_Insurance_Type(e.target.value)}
                      >
                         <option value="">Select cover type</option>
                         <option value="Comprehensive">Comprehensive</option>
                         <option value="Third Party">Third Party</option>
                      </select>
                   </div>
+                  <div className="form-group-submit">
                   <button type="submit">Add Vehicle </button>
+                  </div>
                </form>
             </div>
             <div className="add-transaction" onSubmit={onSubmit}>
@@ -211,7 +214,7 @@ export const ExpenseTracker = () => {
                      <label htmlFor="Expense">Type Expense:</label>
                      <select
                         required
-                        onChange= {(e) => setDescription(e.target.value)}
+                        onChange={(e) => setDescription(e.target.value)}
                      >
 
                         <option value="">Select an expense type</option>
@@ -229,7 +232,7 @@ export const ExpenseTracker = () => {
                         placeholder="Amount"
 
                         required
-                        onChange= {(e) => setAmount(e.target.value)}
+                        onChange={(e) => setAmount(e.target.value)}
 
                      />
                   </div>
