@@ -1,20 +1,21 @@
 
-  .expense-tracker {
-    background-color: #427bb1; /* Navy blue background color */
-    color: #221e1e; /* White text color */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+.expense-tracker {
+  background: linear-gradient(to bottom, #3173b1, #9b59b6); /* Gradient from blue to purple */
+  color: #221e1e; /* White text color */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
   
   /* ... (other styles) ... */
   
   input[type="text"],
   input[type="number"],
+  input[type="date"],
   select {
     width: 20%; /* Reduce the width of input fields to 50% */
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     border: none;
     border-radius: 4px;
   }
@@ -44,9 +45,15 @@
     color: #fff;
     border: none;
     padding: 8px 16px;
-    border-radius: 4px;
     cursor: pointer;
     margin-left: 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s; /* Add a smooth transition for background color */
+  }
+
+  .sign-out-buton:hover {
+    background-color: #c22323/* Red color for the sign-out button */
+
   }
   
   h2 {
@@ -65,8 +72,13 @@
   .add-transaction {
     background-color: #ffffff; /* Blue background for add-vehicle and add-transaction sections */
     padding: 15px;
+    border-style:groove;
+    border-color: #9b59b6;
     margin-top: 20px;
-    border-radius: 20px;
+    border-radius: 1px;
+   
+    
+   
   }
   
   .add-vehicle h3,
@@ -88,13 +100,18 @@
   }
   
   button[type="submit"] {
-    background-color: #4caf50; /* Green color for submit buttons */
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 28px;
-    cursor: pointer;
-    
+    background-color: #4b6af5;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.4s; 
+  }
+
+  button[type="submit"]:hover {
+    background-color: #0f1b8a;
   }
   
   .transactions {
@@ -190,11 +207,17 @@
     width: 250px; /* Set the width of the sidebar as needed */
   }
   .form-group {
-    display: flex;
-    flex-direction: row;
-    margin-right: 700px;
-    align-items: center;
-    margin-bottom: 10px;
+    display:flex;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    grid-gap: 1px; /* Adjust the gap as needed */
+    margin-bottom: 15px;
+    
+  }
+
+  .form-group-expense {
+    display: grid;
+    grid-template-columns:repeat(); /* Two columns */
+    grid-gap: 1px; /* Adjust the gap as needed */
     
   }
 
@@ -219,3 +242,41 @@
   input, select {
     flex: 2;
   }
+
+  header {
+    background-color: #416fb2;
+    color: #fff;
+    display:flex;
+    border-radius: 30px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 600px;
+  }
+
+
+  .top-nav {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 10;
+  }
+  
+  .top-nav li {
+    margin-right: 20px;
+    
+  }
+  
+  .top-nav a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight:normal;
+    
+  }
+  
+  .top-nav a:hover {
+    text-decoration: underline;
+  }
+
+
+  
+  
