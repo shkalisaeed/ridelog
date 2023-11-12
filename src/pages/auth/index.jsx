@@ -124,16 +124,7 @@ export const Auth = () => {
     return (
         <div className="login-page">
 
-            <header>
-                <nav>
-                    <ul className="top-nav">
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="#">Our Mission</a></li>
-                        <li><a href="#">Team</a></li>
-                    </ul>
-                </nav>
-                
-            </header>
+            
             <img src={logo} alt="RIDELOG Logo" style={{ width: "50%" }} />
                 
 
