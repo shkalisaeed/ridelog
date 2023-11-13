@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useAddTransaction } from "../../hooks/useAddTransaction";
 import { useAddVehicle } from "../../hooks/useAddVehicle";
 import { useGetUserInfo } from "../../hooks/useGetUserInfo";
+import { useGetVehicles } from "../../hooks/useGetVehicles";
 import "./styles.css";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
-
 
 //---FUNCTIONS START HERE--- 
 
@@ -18,18 +18,18 @@ export const ExpenseTracker = () => {
    const { addVehicle } = useAddVehicle();
    const { name, profilePhoto } = useGetUserInfo();
    const navigate = useNavigate();
-
-
+  
    const [isVehicleAdded, setIsVehicleAdded] = useState(false);
    const [isTransactionAdded, setIsTransactionAdded] = useState(false);
-
-
-
+   const [isDisplayingFleet, setIsDisplayingFleet] = useState(false);
 
    const [make, setMake] = useState("");
    const [model, setModel] = useState("");
    const [year, setYear] = useState("");
    const [rego, setRego] = useState("");
+
+   
+   const { vehicles, loadingVehicles } = useGetVehicles(); // Include loadingVehicles from useGetVehicles
 
 
    const [odo_reading, set_Odo_Reading] = useState("");
@@ -42,12 +42,10 @@ export const ExpenseTracker = () => {
    const [transactionAmount, setAmount] = useState(0);
    const [description, setDescription] = useState("");
    const [transactionDate, setTransactionDate] = useState("");
+   const [selectedVehicleRego, setSelectedVehicleRego] = useState("");
 
 
    //const [expenseType, setExpenseType] = useState("Gas");
-
-
-
 
    const handleTransactionSubmit = (e) => {
       e.preventDefault();
@@ -55,8 +53,13 @@ export const ExpenseTracker = () => {
       console.log(`Description: ${description}, Amount: ${transactionAmount}, Type: ${transactionType}, , Date: ${transactionDate} `);
    };
 
+   const handleDisplayFleet = () => {
+      setIsDisplayingFleet(true);
+   };
 
-
+   const handleCloseFleet = () => {
+      setIsDisplayingFleet(false);
+   };
 
    //TESTING Add Vehicle
    const onSubmit2 = async (e) => {
@@ -78,18 +81,22 @@ export const ExpenseTracker = () => {
    };
 
 
-
-
-
    //TESTING Add Expense   
    const onSubmit = async (e) => {
-      e.preventDefault()
+      e.preventDefault();
+      if (!selectedVehicleRego) {
+         // Display an error message or handle the case where no vehicle is selected.
+         return;
+      }
+
       addTransaction({
+         rego: selectedVehicleRego,  // Add the selected vehicle's rego
          transactionType,
          transactionAmount,
          description,
          transactionDate
-      })
+      });
+   
       setIsTransactionAdded(true);
    };
 
@@ -296,16 +303,44 @@ export const ExpenseTracker = () => {
                      />
                   </div>
                   <button type="submit" id="submit-button">Add Vehicle</button>
-                  <div id="notification" className="notification">
-                     {isVehicleAdded && <p>Vehicle Added Successfully</p>}
-                  </div>
+               <button type="button" id="display-button" onClick={handleDisplayFleet}>
+                  Display Fleet
+               </button>
+
+               <div id="notification" className="notification">
+                  {isVehicleAdded && <p>Vehicle Added Successfully</p>}
+               </div>
 
                </form>
             </div>
             <div className="add-transaction" onSubmit={onSubmit}>
-               <h3>Add Expense</h3>
+            <h3>Add Expense</h3>
                <form onSubmit={handleTransactionSubmit}>
                   <div className="form-group">
+                     <label htmlFor="Expense">Vehicle Rego*:</label>
+                     {loadingVehicles ? (
+                        <p>Loading vehicles...</p>
+                     ) : (
+                        <select
+                           required
+                           onChange={(e) => setSelectedVehicleRego(e.target.value)}
+                        >
+                           <option value="">Select a vehicle</option>
+                           {vehicles.length > 1 && (
+                              // Render options only if there are more than two vehicles
+                              vehicles.map((vehicle) => (
+                                 <option key={vehicle.rego} value={vehicle.rego}>
+                                    {vehicle.make} {vehicle.model} ({vehicle.rego})
+                                 </option>
+                              ))
+                           )}
+                        </select>
+                     )}
+
+
+
+
+
                      <label htmlFor="Expense">Type*:</label>
                      <select
                         required
@@ -343,7 +378,7 @@ export const ExpenseTracker = () => {
 
                         onChange={(e) => setTransactionDate(e.target.value)}
                      />
-                  
+
                   </div>
                   <button type="submit" id="submit-button">Add Expense</button>
                   <div id="notification" className="notification">
@@ -357,6 +392,22 @@ export const ExpenseTracker = () => {
          <div className="transactions">
             <h3>Recent Expenses</h3>
          </div>
+      {}
+      {isDisplayingFleet && (
+            <div className="fleet-modal">
+               <div className="fleet-modal-content">
+                  <span className="close" onClick={handleCloseFleet}>&times;</span>
+                  <h3>Fleet Information</h3>
+                  <ul>
+                     {vehicles.map((vehicle) => (
+                        <li key={vehicle.rego}>
+                           {vehicle.make} {vehicle.model} ({vehicle.rego})
+                        </li>
+                     ))}
+                  </ul>
+               </div>
+            </div>
+         )}
       </>
    );
 };
