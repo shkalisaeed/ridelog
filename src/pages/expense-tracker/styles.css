@@ -126,6 +126,21 @@
     font-size: 18px;
   }
   
+  .transactions {
+    width: 100%;
+}
+
+.row {
+    display: flex;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin: 5px;
+}
+
 
   /* Sidebar styles */
 .sidebar {

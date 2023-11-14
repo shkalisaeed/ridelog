@@ -391,6 +391,22 @@ export const ExpenseTracker = () => {
 
          <div className="transactions">
             <h3>Recent Expenses</h3>
+            <div className="row">
+               <div className="column">Fuel</div>
+               <div className="column">Insurance</div>
+               <div className="column">Maintenance</div>
+               <div className="column">Other</div>
+               <div className="column">Registration</div>
+            </div>
+
+            <div className="row">
+               <div className="column">Expense Breakdown by Category</div>
+               <div className="column">Spending in the past 6M</div>
+            </div>
+
+            <div className="row">
+               <div className="column">Spending by Vehicle</div>
+            </div>
          </div>
       {}
       {isDisplayingFleet && (
