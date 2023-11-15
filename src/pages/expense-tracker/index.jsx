@@ -4,6 +4,7 @@ import { useAddVehicle } from "../../hooks/useAddVehicle";
 import { useGetUserInfo } from "../../hooks/useGetUserInfo";
 import { useGetVehicles } from "../../hooks/useGetVehicles";
 import "./styles.css";
+import "./global.css";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ export const ExpenseTracker = () => {
    const { addVehicle } = useAddVehicle();
    const { name, profilePhoto } = useGetUserInfo();
    const navigate = useNavigate();
-  
+
    const [isVehicleAdded, setIsVehicleAdded] = useState(false);
    const [isTransactionAdded, setIsTransactionAdded] = useState(false);
    const [isDisplayingFleet, setIsDisplayingFleet] = useState(false);
@@ -27,8 +28,13 @@ export const ExpenseTracker = () => {
    const [model, setModel] = useState("");
    const [year, setYear] = useState("");
    const [rego, setRego] = useState("");
-
+   const [color, setColor] = useState("");
+   const [fuelType, setFuelType] = useState("");
+   const [marketValue, setMarketValue] = useState("");
+   const [updatedAt, setUpdatedAt] = useState("");
    
+
+
    const { vehicles, loadingVehicles } = useGetVehicles(); // Include loadingVehicles from useGetVehicles
 
 
@@ -39,7 +45,7 @@ export const ExpenseTracker = () => {
 
 
    const [transactionType, setTransactionType] = useState("");
-   const [transactionAmount, setAmount] = useState(0);
+   const [transactionAmount, setAmount] = useState(0.0);
    const [description, setDescription] = useState("");
    const [transactionDate, setTransactionDate] = useState("");
    const [selectedVehicleRego, setSelectedVehicleRego] = useState("");
@@ -64,7 +70,7 @@ export const ExpenseTracker = () => {
    //TESTING Add Vehicle
    const onSubmit2 = async (e) => {
       e.preventDefault()
-      addVehicle({ make, model, year, rego, odo_reading, tank_size, insurance_provider, insurance_type })
+      addVehicle({ make, model, year, rego, odo_reading, tank_size, insurance_provider, insurance_type, color, fuelType, marketValue, updatedAt })
       setIsVehicleAdded(true);
 
    };
@@ -96,7 +102,7 @@ export const ExpenseTracker = () => {
          description,
          transactionDate
       });
-   
+
       setIsTransactionAdded(true);
    };
 
@@ -245,7 +251,7 @@ export const ExpenseTracker = () => {
                      <label htmlFor="color">Color:</label>
                      <select
                         className="color-dropdown"
-                        onChange={(e) => setTank_Size(e.target.value)}
+                        onChange={(e) => setColor(e.target.value)}
                      >
                         <option value="">Select Color</option>
                         <option value="White" style={{ backgroundColor: "White" }}>
@@ -279,7 +285,7 @@ export const ExpenseTracker = () => {
                         type="text"
                         placeholder="Fuel"
                         required
-                        onChange={(e) => set_Insurance_Type(e.target.value)}
+                        onChange={(e) => setFuelType(e.target.value)}
                      >
                         <option value="Petrol">Petrol</option>
                         <option value="">Diesel</option>
@@ -291,7 +297,7 @@ export const ExpenseTracker = () => {
                         type="number"
                         placeholder="Value $"
 
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => setMarketValue(e.target.value)}
                      />
 
                      <label htmlFor="Update">Updated At:</label>
@@ -299,22 +305,22 @@ export const ExpenseTracker = () => {
                         type="date"
                         placeholder="Date"
 
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => setUpdatedAt(e.target.value)}
                      />
                   </div>
                   <button type="submit" id="submit-button">Add Vehicle</button>
-               <button type="button" id="display-button" onClick={handleDisplayFleet}>
-                  Display Fleet
-               </button>
+                  <button type="button" id="display-button" onClick={handleDisplayFleet}>
+                     Display Fleet
+                  </button>
 
-               <div id="notification" className="notification">
-                  {isVehicleAdded && <p>Vehicle Added Successfully</p>}
-               </div>
+                  <div id="notification" className="notification">
+                     {isVehicleAdded && <p>Vehicle Added Successfully</p>}
+                  </div>
 
                </form>
             </div>
             <div className="add-transaction" onSubmit={onSubmit}>
-            <h3>Add Expense</h3>
+               <h3>Add Expense</h3>
                <form onSubmit={handleTransactionSubmit}>
                   <div className="form-group">
                      <label htmlFor="Expense">Vehicle Rego*:</label>
@@ -337,10 +343,6 @@ export const ExpenseTracker = () => {
                         </select>
                      )}
 
-
-
-
-
                      <label htmlFor="Expense">Type*:</label>
                      <select
                         required
@@ -355,20 +357,18 @@ export const ExpenseTracker = () => {
                      </select>
                      <label htmlFor="Expense">Amount*:</label>
                      <input
-
                         type="number"
                         placeholder="Amount $"
-
+                        step="any" // Allow any decimal input
                         required
                         onChange={(e) => setAmount(e.target.value)}
-
                      />
 
 
                      <label htmlFor="Expense">Description:</label>
                      <textarea
                         placeholder=""
-                        required
+
                         onChange={(e) => setDescription(e.target.value)}
                      ></textarea>
                      <label> Date*:</label>
@@ -388,26 +388,47 @@ export const ExpenseTracker = () => {
             </div>
          </div>
 
-
-         <div className="transactions">
-            <h3>Recent Expenses</h3>
-         </div>
-      {}
-      {isDisplayingFleet && (
-            <div className="fleet-modal">
-               <div className="fleet-modal-content">
-                  <span className="close" onClick={handleCloseFleet}>&times;</span>
-                  <h3>Fleet Information</h3>
-                  <ul>
-                     {vehicles.map((vehicle) => (
-                        <li key={vehicle.rego}>
-                           {vehicle.make} {vehicle.model} ({vehicle.rego})
-                        </li>
-                     ))}
-                  </ul>
-               </div>
+         <div className="form-group-transaction">
+            <div>
+               <h3>Recent Expenses</h3>
             </div>
-         )}
+            { }
+            {isDisplayingFleet && (
+               <div className="fleet-modal">
+                  <div className="fleet-modal-content">
+
+                     <h3>Fleet Information</h3>
+                     <span className="close" onClick={handleCloseFleet}>click here to close</span>
+                     <div className="center-table">
+                        <table>
+                           <thead>
+                              <tr>
+                                 <th>Make</th>
+                                 <th>Model</th>
+                                 <th>Registration</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {vehicles.map((vehicle) => (
+                                 <tr key={vehicle.rego}>
+                                    <td>{vehicle.make}</td>
+                                    <td>{vehicle.model}</td>
+                                    <td>{vehicle.rego}</td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+
+            )}
+         </div>
+         <footer className="footer">
+            {/* Your footer content goes here */}
+            <p>&copy; 2023 Ridelog. All rights reserved.</p>
+         </footer>
+
       </>
    );
 };
