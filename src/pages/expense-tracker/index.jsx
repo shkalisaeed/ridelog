@@ -3,7 +3,6 @@ import { useAddTransaction } from "../../hooks/useAddTransaction";
 import { useAddVehicle } from "../../hooks/useAddVehicle";
 import { useGetUserInfo } from "../../hooks/useGetUserInfo";
 import { useGetVehicles } from "../../hooks/useGetVehicles";
-import { useGetTransactions } from "../../hooks/useGetTransactions";
 import "./styles.css";
 import "./global.css";
 import { signOut } from "firebase/auth";
@@ -11,15 +10,12 @@ import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
-import { setUserId } from "firebase/analytics";
 
 //---FUNCTIONS START HERE--- 
 
 export const ExpenseTracker = () => {
 
    const { addTransaction } = useAddTransaction();
-   const { transactions } = useGetTransactions();
-
    const { addVehicle } = useAddVehicle();
    const { name, profilePhoto } = useGetUserInfo();
    const navigate = useNavigate();
@@ -36,8 +32,7 @@ export const ExpenseTracker = () => {
    const [fuelType, setFuelType] = useState("");
    const [marketValue, setMarketValue] = useState("");
    const [updatedAt, setUpdatedAt] = useState("");
-
-
+   
 
 
    const { vehicles, loadingVehicles } = useGetVehicles(); // Include loadingVehicles from useGetVehicles
@@ -54,8 +49,6 @@ export const ExpenseTracker = () => {
    const [description, setDescription] = useState("");
    const [transactionDate, setTransactionDate] = useState("");
    const [selectedVehicleRego, setSelectedVehicleRego] = useState("");
-   const [recentExpenses, setRecentExpenses] = useState([]);
-
 
 
    //const [expenseType, setExpenseType] = useState("Gas");
@@ -135,7 +128,6 @@ export const ExpenseTracker = () => {
                      <img className="profile-photo" src={profilePhoto} alt="Profile bbPhoto" />
                   ) : (
                      <img className="profile-photo" src={defaultprofilepic} alt="Profile asdPhoto" />
-
                   )}
                </div>
                <button className="sign-out-button" onClick={signUserOut}>
@@ -208,9 +200,9 @@ export const ExpenseTracker = () => {
                      />
 
 
-                     <label htmlFor="tanksize">Tank(L):</label>
+                     <label htmlFor="tanksize">Tank(L)*:</label>
                      <select
-
+                        required
                         onChange={(e) => setTank_Size(e.target.value)}
                      >
                         <option value="">Select Tank Size</option>
@@ -298,7 +290,6 @@ export const ExpenseTracker = () => {
                         <option value="Petrol">Petrol</option>
                         <option value="">Diesel</option>
                         <option value="">LPG</option>
-                        <option value="">EV</option>
                      </select>
 
                      <label htmlFor="Expense">Market Value:</label>
@@ -398,34 +389,23 @@ export const ExpenseTracker = () => {
          </div>
 
          <div className="form-group-transaction">
-            <div >
+            <div>
                <h3>Recent Expenses</h3>
-               <div class="center-table">
-                  <table>
-                     <thead>
-                        <tr>
-                        
-                           <th>Type</th>
-                           <th>Amount</th>
-                           <th>Date</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        {transactions.slice(-3).map((transaction) => {
-                           const { transactionType, transactionAmount, transactionDate } = transaction;
-                           return (
-                              <tr key={setUserId}>
-                                 
-                                 <td>{transactionType}</td>
-                                 <td>$ {transactionAmount}</td>
-                                 <td>{transactionDate}</td>
-                              </tr>
-                           );
-                        })}
-                     </tbody>
-                  </table>
+               <div className="row">
+                  <div className="column">Fuel</div>
+                  <div className="column">Insurance</div>
+                  <div className="column">Maintenance</div>
+                  <div className="column">Other</div>
                </div>
 
+               <div className="row">
+                  <div className="column">Expense Breakdown by Category</div>
+                  <div className="column">Spending in the past 6M</div>
+               </div>
+
+               <div className="row">
+                  <div className="column">Spending by Vehicle</div>
+               </div>
             </div>
             { }
             {isDisplayingFleet && (
@@ -461,7 +441,7 @@ export const ExpenseTracker = () => {
          </div>
          <footer className="footer">
             {/* Your footer content goes here */}
-            <p>&copy; 2023 Ridelog (team DB). All rights reserved.</p>
+            <p>&copy; 2023 Ridelog. All rights reserved.</p>
          </footer>
 
       </>

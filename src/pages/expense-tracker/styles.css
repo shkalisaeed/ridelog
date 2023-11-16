@@ -134,6 +134,18 @@
 }
 
 .row {
+  display: flex;
+}
+
+.column {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin: 5px;
+}
+
+
+.row {
     display: flex;
 }
 
