@@ -10,6 +10,7 @@ import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
+import Chart from 'chart.js/auto'
 
 //---FUNCTIONS START HERE--- 
 
@@ -106,6 +107,91 @@ export const ExpenseTracker = () => {
       setIsTransactionAdded(true);
    };
 
+   useEffect(() => {
+      // Function to render both the pie chart and the bar chart
+      const renderCharts = () => {
+        // Pie Chart
+        const ctxPieChart = document.getElementById('pieChart').getContext('2d');
+    
+        // Destroy existing pie chart if it exists
+        if (window.myPieChart) {
+          window.myPieChart.destroy();
+        }
+    
+        // Sample data for the pie chart (replace this with your actual data)
+        const pieChartData = {
+          labels: ['Fuel', 'Maintenance', 'Insurance', 'Registration', 'Other'],
+          datasets: [{
+            data: [20, 15, 25, 10, 30], // Replace with your actual data
+            backgroundColor: ['#ff9999', '#66b3ff', '#99ff99', '#ffcc99', '#c2c2f0'],
+          }],
+        };
+
+        const pieChartOptions = {
+         plugins: {
+           legend: {
+             position: 'right', // Set legend position to left
+             align: 'center',  // Center the legend horizontally
+           },
+         },
+       };
+    
+        window.myPieChart = new Chart(ctxPieChart, {
+          type: 'pie',
+          data: pieChartData,
+          options: pieChartOptions,
+        });
+    
+        // Bar Chart
+        const ctxBarChart = document.getElementById('barChart').getContext('2d');
+    
+        // Destroy existing bar chart if it exists
+        if (window.myBarChart) {
+          window.myBarChart.destroy();
+        }
+    
+        // Sample data for the bar chart (replace this with your actual data)
+        const barChartData = {
+          labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
+          datasets: [{
+            label: 'Spending in the past 6 months',
+            data: [50, 30, 20, 40, 60, 25], // Replace with your actual data
+            backgroundColor: '#66b3ff',
+            borderColor: '#4e73df',
+            borderWidth: 1,
+          }],
+        };
+    
+        const barChartOptions = {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        };
+    
+        window.myBarChart = new Chart(ctxBarChart, {
+          type: 'bar',
+          data: barChartData,
+          options: barChartOptions,
+        });
+      };
+    
+      // Call the renderCharts function
+      renderCharts();
+    
+      // Cleanup function to destroy the charts when the component is unmounted
+      return () => {
+        if (window.myPieChart) {
+          window.myPieChart.destroy();
+        }
+    
+        if (window.myBarChart) {
+          window.myBarChart.destroy();
+        }
+      };
+    }, []); // Run the effect only once when the component mounts
+    
 
    //---END OF FUNCTIONS---
    return (
@@ -398,9 +484,13 @@ export const ExpenseTracker = () => {
                   <div className="column">Other</div>
                </div>
 
-               <div className="row">
-                  <div className="column">Expense Breakdown by Category</div>
-                  <div className="column">Spending in the past 6M</div>
+               <div className="chartRow">
+                  <div className="chartColumn">Expense Breakdown by Category
+                     <canvas id="pieChart"></canvas>
+                  </div>
+                  <div className="chartColumn">Spending in the past 6M
+                     <canvas id="barChart"></canvas>
+                  </div>
                </div>
 
                <div className="row">
