@@ -494,7 +494,21 @@ export const ExpenseTracker = () => {
                </div>
 
                <div className="row">
-                  <div className="column">Spending by Vehicle</div>
+                  <div className="column">Spending by Vehicle
+                     <table>
+                        <thead>
+                           <tr>
+                              <th>Vehicle</th>
+                              <th>Fuel</th>
+                              <th>Insurance</th>
+                              <th>Maintenance</th>
+                              <th>Other</th>
+                              <th>Total</th>
+                           </tr>
+                        </thead>
+                        {/* idk the code that goes here to call from DB. Check lines 531 - 537  */}
+                     </table>
+                  </div>
                </div>
             </div>
             { }
