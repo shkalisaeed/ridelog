@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAddTransaction } from "../../hooks/useAddTransaction";
 import { useAddVehicle } from "../../hooks/useAddVehicle";
 import { useGetUserInfo } from "../../hooks/useGetUserInfo";
 import { useGetVehicles } from "../../hooks/useGetVehicles";
+import { useGetTransactions } from "../../hooks/useGetTransactions";
 import "./styles.css";
 import "./global.css";
 import { signOut } from "firebase/auth";
@@ -10,13 +11,17 @@ import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
-import Chart from 'chart.js/auto'
+import { setUserId } from "firebase/analytics";
+import Chart from 'chart.js/auto';
+
 
 //---FUNCTIONS START HERE--- 
 
 export const ExpenseTracker = () => {
 
    const { addTransaction } = useAddTransaction();
+   const { transactions } = useGetTransactions();
+
    const { addVehicle } = useAddVehicle();
    const { name, profilePhoto } = useGetUserInfo();
    const navigate = useNavigate();
@@ -33,10 +38,9 @@ export const ExpenseTracker = () => {
    const [fuelType, setFuelType] = useState("");
    const [marketValue, setMarketValue] = useState("");
    const [updatedAt, setUpdatedAt] = useState("");
-   
-
-
+   const [selectedVehicleExpenses, setSelectedVehicleExpenses] = useState([]);
    const { vehicles, loadingVehicles } = useGetVehicles(); // Include loadingVehicles from useGetVehicles
+   const [isRecentExpensesVisible, setIsRecentExpensesVisible] = useState(true);
 
 
    const [odo_reading, set_Odo_Reading] = useState("");
@@ -56,9 +60,19 @@ export const ExpenseTracker = () => {
 
    const handleTransactionSubmit = (e) => {
       e.preventDefault();
+
       // Handle transaction submission here
-      console.log(`Description: ${description}, Amount: ${transactionAmount}, Type: ${transactionType}, , Date: ${transactionDate} `);
+      console.log(`Description: ${description}, Amount: ${transactionAmount}, Type: ${transactionType}, Date: ${transactionDate}`);
+
+      // Update selected vehicle expenses
+      const newExpense = {
+         transactionType,
+         transactionAmount,
+         transactionDate,
+      };
+      setSelectedVehicleExpenses([...selectedVehicleExpenses, newExpense]);
    };
+
 
    const handleDisplayFleet = () => {
       setIsDisplayingFleet(true);
@@ -66,6 +80,10 @@ export const ExpenseTracker = () => {
 
    const handleCloseFleet = () => {
       setIsDisplayingFleet(false);
+   };
+
+   const handleToggleRecentExpenses = () => {
+      setIsRecentExpensesVisible(!isRecentExpensesVisible);
    };
 
    //TESTING Add Vehicle
@@ -108,90 +126,73 @@ export const ExpenseTracker = () => {
    };
 
    useEffect(() => {
-      // Function to render both the pie chart and the bar chart
-      const renderCharts = () => {
-        // Pie Chart
-        const ctxPieChart = document.getElementById('pieChart').getContext('2d');
-    
-        // Destroy existing pie chart if it exists
-        if (window.myPieChart) {
-          window.myPieChart.destroy();
-        }
-    
-        // Sample data for the pie chart (replace this with your actual data)
-        const pieChartData = {
-          labels: ['Fuel', 'Maintenance', 'Insurance', 'Registration', 'Other'],
-          datasets: [{
-            data: [20, 15, 25, 10, 30], // Replace with your actual data
-            backgroundColor: ['#ff9999', '#66b3ff', '#99ff99', '#ffcc99', '#c2c2f0'],
-          }],
-        };
+      const updatePieChart = () => {
+         const selectedVehicle = vehicles.find((vehicle) => vehicle.rego === selectedVehicleRego);
+         if (!selectedVehicle) return;
 
-        const pieChartOptions = {
-         plugins: {
-           legend: {
-             position: 'right', // Set legend position to left
-             align: 'center',  // Center the legend horizontally
-           },
-         },
-       };
-    
-        window.myPieChart = new Chart(ctxPieChart, {
-          type: 'pie',
-          data: pieChartData,
-          options: pieChartOptions,
-        });
-    
-        // Bar Chart
-        const ctxBarChart = document.getElementById('barChart').getContext('2d');
-    
-        // Destroy existing bar chart if it exists
-        if (window.myBarChart) {
-          window.myBarChart.destroy();
-        }
-    
-        // Sample data for the bar chart (replace this with your actual data)
-        const barChartData = {
-          labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
-          datasets: [{
-            label: 'Spending in the past 6 months',
-            data: [50, 30, 20, 40, 60, 25], // Replace with your actual data
-            backgroundColor: '#66b3ff',
-            borderColor: '#4e73df',
-            borderWidth: 1,
-          }],
-        };
-    
-        const barChartOptions = {
-          scales: {
-            y: {
-              beginAtZero: true,
+         const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
+
+         const ctx = document.getElementById('pieChart').getContext('2d');
+         if (!ctx) return;
+
+         // Check if there's an existing chart on the canvas and destroy it
+         const existingChart = Chart.getChart(ctx);
+         if (existingChart) {
+            existingChart.destroy();
+         }
+
+         const data = {
+            labels: expenses.map((expense) => expense.transactionType),
+            datasets: [
+               {
+                  data: expenses.map((expense) => expense.transactionAmount),
+                  backgroundColor: [
+                     'rgba(255, 99, 132, 0.7)',
+                     'rgba(54, 162, 235, 0.7)',
+                     'rgba(255, 206, 86, 0.7)',
+                     'rgba(75, 192, 192, 0.7)',
+                     'rgba(153, 102, 255, 0.7)',
+                  ],
+               },
+            ],
+         };
+
+         const options = {
+            width: 30, // Adjust the width as needed
+            height: 30,
+            plugins: {
+               legend: {
+                  position: 'bottom',
+               },
+               title: {
+                  display: true,
+                  text: 'Vehicle Expense Distribution', // Your label here
+                  font: {
+                     size: 14,
+                  },
+               },
+               datalabels: {
+                  anchor: 'center',
+                  align: 'center',
+                  formatter: (value, context) => {
+                     const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                     const percentage = ((value / total) * 100).toFixed(1) + '%';
+                     return percentage;
+                  },
+               },
             },
-          },
-        };
-    
-        window.myBarChart = new Chart(ctxBarChart, {
-          type: 'bar',
-          data: barChartData,
-          options: barChartOptions,
-        });
+         };
+
+         new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: options,
+         });
       };
-    
-      // Call the renderCharts function
-      renderCharts();
-    
-      // Cleanup function to destroy the charts when the component is unmounted
-      return () => {
-        if (window.myPieChart) {
-          window.myPieChart.destroy();
-        }
-    
-        if (window.myBarChart) {
-          window.myBarChart.destroy();
-        }
-      };
-    }, []); // Run the effect only once when the component mounts
-    
+
+
+      updatePieChart();
+   }, [transactions, selectedVehicleRego, vehicles]);
 
    //---END OF FUNCTIONS---
    return (
@@ -214,6 +215,7 @@ export const ExpenseTracker = () => {
                      <img className="profile-photo" src={profilePhoto} alt="Profile bbPhoto" />
                   ) : (
                      <img className="profile-photo" src={defaultprofilepic} alt="Profile asdPhoto" />
+
                   )}
                </div>
                <button className="sign-out-button" onClick={signUserOut}>
@@ -286,9 +288,9 @@ export const ExpenseTracker = () => {
                      />
 
 
-                     <label htmlFor="tanksize">Tank(L)*:</label>
+                     <label htmlFor="tanksize">Tank(L):</label>
                      <select
-                        required
+
                         onChange={(e) => setTank_Size(e.target.value)}
                      >
                         <option value="">Select Tank Size</option>
@@ -376,6 +378,7 @@ export const ExpenseTracker = () => {
                         <option value="Petrol">Petrol</option>
                         <option value="">Diesel</option>
                         <option value="">LPG</option>
+                        <option value="">EV</option>
                      </select>
 
                      <label htmlFor="Expense">Market Value:</label>
@@ -395,9 +398,39 @@ export const ExpenseTracker = () => {
                      />
                   </div>
                   <button type="submit" id="submit-button">Add Vehicle</button>
-                  <button type="button" id="display-button" onClick={handleDisplayFleet}>
-                     Display Fleet
+                  <button type="button" id="display-button" onClick={() => setIsDisplayingFleet(prevState => !prevState)}>
+                     {isDisplayingFleet ? 'Hide Fleet' : 'Display Fleet'}
                   </button>
+<p></p>
+                  
+                  {isDisplayingFleet && (
+  <div className="fleet-modal">
+    <div className="fleet-modal-content">
+      <div className="center-table">
+        <table>
+          <thead>
+            <tr>
+              <th>No #</th>
+              <th>Make</th>
+              <th>Model</th>
+              <th>Registration</th>
+            </tr>
+          </thead>
+          <tbody>
+            {vehicles.map((vehicle, index) => (
+              <tr key={vehicle.rego}>
+                <td>{index + 1}</td>
+                <td>{vehicle.make}</td>
+                <td>{vehicle.model}</td>
+                <td>{vehicle.rego}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
 
                   <div id="notification" className="notification">
                      {isVehicleAdded && <p>Vehicle Added Successfully</p>}
@@ -467,85 +500,57 @@ export const ExpenseTracker = () => {
 
                   </div>
                   <button type="submit" id="submit-button">Add Expense</button>
+                  <button type="button" onClick={handleToggleRecentExpenses}>
+                     {isRecentExpensesVisible ? 'Hide Recent Expenses' : 'Show Recent Expenses'}
+                  </button>
                   <div id="notification" className="notification">
                      {isTransactionAdded && <p>Transaction Added Successfully</p>}
                   </div>
+                  <p></p>
+                  <div>
+                     {isRecentExpensesVisible && (
+                        <div class="center-table">
+                           <table>
+                              <thead>
+                                 <tr>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {transactions.slice(-3).map((transaction) => {
+                                    const { transactionType, transactionAmount, transactionDate } = transaction;
+                                    return (
+                                       <tr key={setUserId}>
+                                          <td>{transactionType}</td>
+                                          <td>$ {transactionAmount}</td>
+                                          <td>{transactionDate}</td>
+                                       </tr>
+                                    );
+                                 })}
+                              </tbody>
+                           </table>
+                        </div>
+                     )}
+
+
+                  </div>
+
                </form>
             </div>
+
          </div>
 
          <div className="form-group-transaction">
-            <div>
-               <h3>Recent Expenses</h3>
-               <div className="row">
-                  <div className="column">Fuel</div>
-                  <div className="column">Insurance</div>
-                  <div className="column">Maintenance</div>
-                  <div className="column">Other</div>
-               </div>
-
-               <div className="chartRow">
-                  <div className="chartColumn">Expense Breakdown by Category
-                     <canvas id="pieChart"></canvas>
-                  </div>
-                  <div className="chartColumn">Spending in the past 6M
-                     <canvas id="barChart"></canvas>
-                  </div>
-               </div>
-
-               <div className="row">
-                  <div className="column">Spending by Vehicle
-                     <table>
-                        <thead>
-                           <tr>
-                              <th>Vehicle</th>
-                              <th>Fuel</th>
-                              <th>Insurance</th>
-                              <th>Maintenance</th>
-                              <th>Other</th>
-                              <th>Total</th>
-                           </tr>
-                        </thead>
-                        {/* idk the code that goes here to call from DB. Check lines 531 - 537  */}
-                     </table>
-                  </div>
-               </div>
+            
+            <div className="pie-chart-container">
+               <canvas id="pieChart" width="300" height="300"></canvas>
             </div>
-            { }
-            {isDisplayingFleet && (
-               <div className="fleet-modal">
-                  <div className="fleet-modal-content">
-
-                     <h3>Fleet Information</h3>
-                     <span className="close" onClick={handleCloseFleet}>click here to close</span>
-                     <div className="center-table">
-                        <table>
-                           <thead>
-                              <tr>
-                                 <th>Make</th>
-                                 <th>Model</th>
-                                 <th>Registration</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {vehicles.map((vehicle) => (
-                                 <tr key={vehicle.rego}>
-                                    <td>{vehicle.make}</td>
-                                    <td>{vehicle.model}</td>
-                                    <td>{vehicle.rego}</td>
-                                 </tr>
-                              ))}
-                           </tbody>
-                        </table>
-                     </div>
-                  </div>
-               </div>
-
-            )}
          </div>
          <footer className="footer">
             {/* Your footer content goes here */}
-            <p>&copy; 2023 Ridelog. All rights reserved.</p>
+            <p>&copy; 2023 Ridelog (team DB). All rights reserved.</p>
          </footer>
 
       </>
