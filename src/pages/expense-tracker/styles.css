@@ -76,7 +76,7 @@
     padding: 15px;
     border-style:dotted;
     border-color: #9b59b6;
-    margin-top: 20px;
+    margin-top: 15px;
     border-radius: 1px;
   }
   
@@ -129,6 +129,7 @@
     font-size: 18px;
   }
   
+<<<<<<< HEAD
   .transactions {
     width: 100%;
 }
@@ -171,6 +172,8 @@ canvas {
   width: 100%;
   height: 100%;
 }
+=======
+>>>>>>> afef645dbef87f5c245dc5d9ebbe88b2e5610846
 
   /* Sidebar styles */
 .sidebar {
@@ -250,6 +253,8 @@ canvas {
     z-index: 2;
     color: #fff;
   }
+
+  
   
   /* Sidebar open style */
   .sidebar-open {
@@ -339,6 +344,18 @@ canvas {
     align-items: center;
    
  }
+
+ #pieChart {
+  margin-left:  30px;
+
+}
+
+.pie-chart-container {
+  
+  width: 300px; /* Adjust as needed */
+  height: 300px; /* Adjust as needed */
+}
+
  .footer {
   text-align: center;
   padding: 10px;
