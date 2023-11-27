@@ -54,6 +54,9 @@ export const ExpenseTracker = () => {
    const [description, setDescription] = useState("");
    const [transactionDate, setTransactionDate] = useState("");
    const [selectedVehicleRego, setSelectedVehicleRego] = useState("");
+   const [totalExpenses, setTotalExpenses] = useState([]);
+   const [selectedDate, setSelectedDate] = useState("");
+   const [selectedVehicleName, setSelectedVehicleName] = useState(""); 
 
 
    //const [expenseType, setExpenseType] = useState("Gas");
@@ -125,87 +128,229 @@ export const ExpenseTracker = () => {
       setIsTransactionAdded(true);
    };
 
-   useEffect(() => {
-      const updatePieChart = () => {
-         const selectedVehicle = vehicles.find((vehicle) => vehicle.rego === selectedVehicleRego);
-         if (!selectedVehicle) return;
 
-         const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
+   // Function to update total expenses table
+   const updateTotalExpensesTable = () => {
+      const selectedVehicle = vehicles.find((vehicle) => vehicle.rego === selectedVehicleRego);
+      if (!selectedVehicle) return;
 
-         const ctx = document.getElementById('pieChart').getContext('2d');
-         if (!ctx) return;
+      setSelectedVehicleName(`${selectedVehicle.make} ${selectedVehicle.model}`);
+    
+      const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
+    
+      const totalExpensesByType = {};
+      expenses.forEach((expense) => {
+        if (totalExpensesByType[expense.transactionType]) {
+          // Type already exists, add to the existing total
+          totalExpensesByType[expense.transactionType] += Number(expense.transactionAmount);
+        } else {
+          // Type doesn't exist, initialize the total
+          totalExpensesByType[expense.transactionType] = Number(expense.transactionAmount);
+        }
+      });
+    
+      const updatedTotalExpenses = Object.entries(totalExpensesByType).map(([type, total]) => ({
+        type,
+        total,
+      }));
+    
+      setTotalExpenses(updatedTotalExpenses);
+    };
+    
 
-         // Check if there's an existing chart on the canvas and destroy it
-         const existingChart = Chart.getChart(ctx);
-         if (existingChart) {
-            existingChart.destroy();
-         }
+    const updatePieChart = () => {
+      const selectedVehicle = vehicles.find((vehicle) => vehicle.rego === selectedVehicleRego);
+      if (!selectedVehicle) return;
 
-         const data = {
-            labels: expenses.map((expense) => expense.transactionType),
-            datasets: [
-               {
-                  data: expenses.map((expense) => expense.transactionAmount),
-                  backgroundColor: [
-                     'rgba(255, 99, 132, 0.7)',
-                     'rgba(54, 162, 235, 0.7)',
-                     'rgba(255, 206, 86, 0.7)',
-                     'rgba(75, 192, 192, 0.7)',
-                     'rgba(153, 102, 255, 0.7)',
-                  ],
-               },
-            ],
-         };
-
-         const options = {
-            width: 30, // Adjust the width as needed
-            height: 30,
-            plugins: {
-               legend: {
-                  position: 'bottom',
-               },
-               title: {
-                  display: true,
-                  text: 'Vehicle Expense Distribution', // Your label here
-                  font: {
-                     size: 14,
-                  },
-               },
-               datalabels: {
-                  anchor: 'center',
-                  align: 'center',
-                  formatter: (value, context) => {
-                     const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                     const percentage = ((value / total) * 100).toFixed(1) + '%';
-                     return percentage;
-                  },
-               },
+      const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
+  
+      // Update the selected vehicle's name in the pie chart title
+      const chartTitle = `Expense Distribution of ${selectedVehicle.make} ${selectedVehicle.model}`;
+      
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      if (!ctx) return;
+  
+      // Check if there's an existing chart on the canvas
+      const existingChart = Chart.getChart(ctx);
+    
+      // Aggregate expenses by type
+      const aggregatedExpenses = expenses.reduce((acc, expense) => {
+        const existingExpense = acc.find((e) => e.type === expense.transactionType);
+        if (existingExpense) {
+          existingExpense.total += parseFloat(expense.transactionAmount);
+        } else {
+          acc.push({
+            type: expense.transactionType,
+            total: parseFloat(expense.transactionAmount),
+          });
+        }
+        return acc;
+      }, []);
+    
+      if (existingChart) {
+        // Update the existing chart's data
+        existingChart.data.labels = aggregatedExpenses.map((expense) => expense.type);
+        existingChart.data.datasets[0].data = aggregatedExpenses.map((expense) => expense.total);
+    
+        // Update the chart
+        existingChart.update();
+      } else {
+        // Create a new chart if there's no existing chart
+        const data = {
+          labels: aggregatedExpenses.map((expense) => expense.type),
+          datasets: [
+            {
+              data: aggregatedExpenses.map((expense) => expense.total),
+              backgroundColor: [
+                'rgba(106, 90, 205, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(175, 15, 238, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+              ],
             },
-         };
+          ],
+        };
+    
+        const options = {
+          width: 30, // Adjust the width as needed
+          height: 30,
+          plugins: {
+            legend: {
+              position: 'bottom',
+            },
+        
+            datalabels: {
+              anchor: 'center',
+              align: 'center',
+              formatter: (value, context) => {
+                const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                const percentage = ((value / total) * 100).toFixed(1) + '%';
+                return percentage;
+              },
+            },
+          },
+        };
+    
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: data,
+          options: options,
+        });
+      }
+    };
+    
+//////////////////////////////////
 
-         new Chart(ctx, {
-            type: 'doughnut',
-            data: data,
-            options: options,
-         });
-      };
+    const updatePieChartByDate = () => {
+      const selectedVehicle = vehicles.find((vehicle) => vehicle.rego === selectedVehicleRego);
+      if (!selectedVehicle) return;
+    
+      const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
+    
+      const ctx = document.getElementById('pieChart2').getContext('2d');
+      if (!ctx) return;
+    
+      // Check if there's an existing chart on the canvas
+      const existingChart = Chart.getChart(ctx);
+    
+      // Step 1: Filter expenses based on the selected date
+      const expensesOnSelectedDate = selectedDate
+        ? expenses.filter((expense) => expense.transactionDate === selectedDate)
+        : expenses;
+    
+      // Step 2: Aggregate expenses by type
+      const aggregatedExpenses = expensesOnSelectedDate.reduce((acc, expense) => {
+        const existingExpense = acc.find((e) => e.type === expense.transactionType);
+        if (existingExpense) {
+          existingExpense.total += parseFloat(expense.transactionAmount);
+        } else {
+          acc.push({
+            type: expense.transactionType,
+            total: parseFloat(expense.transactionAmount),
+          });
+        }
+        return acc;
+      }, []);
+    
+      if (existingChart) {
+        // Update the existing chart's data
+        existingChart.data.labels = aggregatedExpenses.map((expense) => expense.type);
+        existingChart.data.datasets[0].data = aggregatedExpenses.map((expense) => expense.total);
+    
+        // Update the chart
+        existingChart.update();
+      } else {
+        // Create a new chart if there's no existing chart
+        const data = {
+          labels: aggregatedExpenses.map((expense) => expense.type),
+          datasets: [
+            {
+              data: aggregatedExpenses.map((expense) => expense.total),
+              backgroundColor: [
+                'rgba(106, 90, 205, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(175, 15, 238, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+              ],
+            },
+          ],
+        };
+    
+        const options = {
+          width: 30, // Adjust the width as needed
+          height: 30,
+          plugins: {
+            legend: {
+              position: 'bottom',
+            },
+            title: {
+              display: true,
+              text: 'Vehicle Expense Distribution',
+              font: {
+                size: 14,
+              },
+            },
+            datalabels: {
+              anchor: 'center',
+              align: 'center',
+              formatter: (value, context) => {
+                const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                const percentage = ((value / total) * 100).toFixed(1) + '%';
+                return percentage;
+              },
+            },
+          },
+        };
+    
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: data,
+          options: options,
+        });
+      }
+    };
+    
+    
+    
+    
+    useEffect(() => {
+      updatePieChartByDate();
+    }, [transactions, selectedDate]);
 
 
-      updatePieChart();
-   }, [transactions, selectedVehicleRego, vehicles]);
+      useEffect(() => {
+         updatePieChart();
+         updateTotalExpensesTable();
+      }, [transactions, selectedVehicleRego, vehicles, selectedDate, selectedVehicleName]); // Include selectedDate in the dependencies
 
    //---END OF FUNCTIONS---
    return (
       <>
          <div className="expense-tracker">
             <header>
-               <nav>
-                  <ul className="top-nav">
-                     <li><a href="#">FAQs</a></li>
-                     <li><a href="#">Our Mission</a></li>
-                     <li><a href="#">Team</a></li>
-                  </ul>
-               </nav>
+            
 
             </header>
 
@@ -509,7 +654,9 @@ export const ExpenseTracker = () => {
                   <p></p>
                   <div>
                      {isRecentExpensesVisible && (
+                        
                         <div class="center-table">
+                           
                            <table>
                               <thead>
                                  <tr>
@@ -542,12 +689,52 @@ export const ExpenseTracker = () => {
 
          </div>
 
-         <div className="form-group-transaction">
-            
-            <div className="pie-chart-container">
-               <canvas id="pieChart" width="300" height="300"></canvas>
-            </div>
-         </div>
+         <div className="form-group">
+        {/* Total Expenses Table */}
+       
+
+        {/* Pie Chart */}
+        <div className="pie-chart-container">
+        
+          <canvas id="pieChart" width="300" height="300"></canvas>
+        </div>
+
+        <div className="total-expenses-container">
+        <h3>{`Expense Breakdown: ${selectedVehicleName}`}</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Total Expense</th>
+              </tr>
+            </thead>
+            <tbody>
+              {totalExpenses.map((expense, index) => (
+                <tr key={index}>
+                  <td>{expense.type}</td>
+                  <td>${Number(expense.total).toFixed(1)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div>
+        {/* Step 1: Add date input for user to select date */}
+        <label htmlFor="selectedDate">Select Date:</label>
+        <input
+          type="date"
+          id="selectedDate"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
+      </div>
+        <div >
+  <canvas id="pieChart2" width="300" height="300"></canvas>
+</div>
+
+
+      </div>
+
          <footer className="footer">
             {/* Your footer content goes here */}
             <p>&copy; 2023 Ridelog (team DB). All rights reserved.</p>
