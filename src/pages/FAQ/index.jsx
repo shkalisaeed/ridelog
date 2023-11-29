@@ -22,34 +22,28 @@ export const YourComponent = () => {
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q1: What features does RIDELOG offer?</div>
-                    <div className="answer">A1:Ridelog is designed to help users monitor and manage their expenses related to owning and operating a vehicle. Ridelog offers vehicle information management, expense logging, mileage tracking, and expense reporting and analytics.</div>
+                    <div className="answer">A1: Ridelog is designed to help users monitor and manage their expenses related to owning and operating a vehicle. Ridelog offers vehicle information management, expense logging, mileage tracking, and expense reporting and analytics.</div>
                 </div>
             </section>
 
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q2: Is my data secure in RIDELOG?</div>
-                    <div className="answer">A2:
+                    <div className="answer">
 
-Yes, your data is secure in the vehicle expense tracker built on Firebase. Firebase implements robust security measures to ensure the confidentiality, integrity, and availability of your data. Here are some key security features:
+                        <p>A2: Your data is secure in the vehicle expense tracker built on Firebase. Firebase implements robust security measures to ensure the confidentiality, integrity, and availability of your data. Here are some key security features:</p>
 
-· Data Encryption
-
-Firebase encrypts data both in transit and at rest. This means that your data is protected while being transmitted over the internet and when stored in Firebase's servers.
-
-· Access Control
-
-With Firebase's security rules, you can define granular access control policies. These rules allow you to specify who can read and write data, based on user authentication, user roles, or other custom attributes. This ensures that each user can only access the data they are authorized to see or modify.
-
-· Firebase Security Audit
-
-Firebase undergoes regular security audits and assessments to ensure compliance with industry best practices. This helps identify and address any potential vulnerabilities, further enhancing the security of your data.
-
-· Firebase's Infrastructure Security
-
-Firebase's infrastructure is designed to be highly secure, with measures in place to protect against unauthorized access, data breaches, and denial-of-service attacks.
-            </div>
-            </div>
+                        <ul>
+                            <li><strong>Data Encryption:</strong>Firebase encrypts data both in transit and at rest. This means that your data is protected while being transmitted over the internet and when stored in Firebase's servers.</li>
+                            
+                            <li><strong>Access Control:</strong>With Firebase's security rules, you can define granular access control policies. These rules allow you to specify who can read and write data, based on user authentication, user roles, or other custom attributes. This ensures that each user can only access the data they are authorized to see or modify.</li>
+                            
+                            <li><strong>Firebase Security Audit:</strong>Firebase undergoes regular security audits and assessments to ensure compliance with industry best practices. This helps identify and address any potential vulnerabilities, further enhancing the security of your data.</li>
+                            
+                            <li><strong>Firebase's Infrastructure Security:</strong>Firebase's infrastructure is designed to be highly secure, with measures in place to protect against unauthorized access, data breaches, and denial-of-service attacks.</li>
+                        </ul>
+                    </div>
+                </div>
             </section>
 
             <section>
@@ -84,34 +78,35 @@ The cents per kilometre rate is meant to cover all costs you've incurred driving
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q6: How to calculate deduction for vehicle expenses?</div>
-                    <div className="answer">A6:
+                    <div className="answer">
 
-You use either of 2 methods to calculate deductions for car expenses:
+                        <p>A6: You can use either of 2 methods to calculate deductions for car expenses:</p>
 
-· Cents per kilometre method
+                        <ul>
+                            <li><strong>Cents per kilometre method</strong></li>
+                            <li><strong>Logbook method</strong></li>
+                        </ul>
 
-· Logbook method.
-
-If you are claiming car expenses for more than one car, you can use a different method for each car. You can also change the method you use in different income years for the same car.</div>
+                        <p>If you are claiming car expenses for more than one car, you can use a different method for each car. You can also change the method you use in different income years for the same car.</p>
+                        </div>
                 </div>
             </section>
 
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q7: What are work-related travels?</div>
-                    <div className="answer">A7:
+                    <div className="answer">
 
-You can claim a tax deduction for the cost of transport on trips to:
+                        <p>A7: You can claim a tax deduction for the cost of transport on trips to:</p>
 
-· perform your work duties – for example, if you travel from your regular place of work to meet with a client
-
-· attend work-related conferences or meetings away from your regular place of work
-
-· deliver items or collect supplies
-
-· go between 2 or more separate places of employment, such as if you have more than one job (but not if one of the places is your home)
-
-· go from your regular place of work to an alternative place of work that isn't a regular place of work (for example, a client's premises) while still on duty, and back to your regular place of work or directly home</div>
+                        <ul>
+                            <li>Perform your work duties – for example, if you travel from your regular place of work to meet with a client</li>
+                            <li>Attend work-related conferences or meetings away from your regular place of work</li>
+                            <li>Deliver items or collect supplies</li>
+                            <li>Go between 2 or more separate places of employment, such as if you have more than one job (but not if one of the places is your home)</li>
+                            <li>Go from your regular place of work to an alternative place of work that isn't a regular place of work (for example, a client's premises) while still on duty, and back to your regular place of work or directly home</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
         </>
