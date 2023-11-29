@@ -38,8 +38,18 @@ h2 {
 .answer {
     display: none;
     margin-top: 10px;
+    text-align: justify;
 }
 
 .answer.active {
     display: block;
+}
+
+li {
+  margin-bottom: 10px; /* Adjust the value to set the desired space between lines */
+  text-align: left;
+}
+
+p {
+  text-align: justify;
 }

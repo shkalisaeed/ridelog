@@ -22,7 +22,7 @@ export const YourComponent = () => {
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q1: What features does RIDELOG offer?</div>
-                    <div className="answer">A1: Ridelog is designed to help users monitor and manage their expenses related to owning and operating a vehicle. Ridelog offers vehicle information management, expense logging, mileage tracking, and expense reporting and analytics.</div>
+                    <div className="answer"><strong>A1:</strong><p> Ridelog is designed to help users monitor and manage their expenses related to owning and operating a vehicle. Ridelog offers vehicle information management, expense logging, mileage tracking, and expense reporting and analytics.</p></div>
                 </div>
             </section>
 
@@ -31,16 +31,16 @@ export const YourComponent = () => {
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q2: Is my data secure in RIDELOG?</div>
                     <div className="answer">
 
-                        <p>A2: Your data is secure in the vehicle expense tracker built on Firebase. Firebase implements robust security measures to ensure the confidentiality, integrity, and availability of your data. Here are some key security features:</p>
+                        <strong>A2:</strong><p> Your data is secure in the vehicle expense tracker built on Firebase. Firebase implements robust security measures to ensure the confidentiality, integrity, and availability of your data. Here are some key security features:</p>
 
                         <ul>
-                            <li><strong>Data Encryption:</strong>Firebase encrypts data both in transit and at rest. This means that your data is protected while being transmitted over the internet and when stored in Firebase's servers.</li>
+                            <li><strong>Data Encryption:</strong> Firebase encrypts data both in transit and at rest. This means that your data is protected while being transmitted over the internet and when stored in Firebase's servers.</li>
                             
-                            <li><strong>Access Control:</strong>With Firebase's security rules, you can define granular access control policies. These rules allow you to specify who can read and write data, based on user authentication, user roles, or other custom attributes. This ensures that each user can only access the data they are authorized to see or modify.</li>
+                            <li><strong>Access Control:</strong> With Firebase's security rules, you can define granular access control policies. These rules allow you to specify who can read and write data, based on user authentication, user roles, or other custom attributes. This ensures that each user can only access the data they are authorized to see or modify.</li>
                             
-                            <li><strong>Firebase Security Audit:</strong>Firebase undergoes regular security audits and assessments to ensure compliance with industry best practices. This helps identify and address any potential vulnerabilities, further enhancing the security of your data.</li>
+                            <li><strong>Firebase Security Audit:</strong> Firebase undergoes regular security audits and assessments to ensure compliance with industry best practices. This helps identify and address any potential vulnerabilities, further enhancing the security of your data.</li>
                             
-                            <li><strong>Firebase's Infrastructure Security:</strong>Firebase's infrastructure is designed to be highly secure, with measures in place to protect against unauthorized access, data breaches, and denial-of-service attacks.</li>
+                            <li><strong>Firebase's Infrastructure Security:</strong> Firebase's infrastructure is designed to be highly secure, with measures in place to protect against unauthorized access, data breaches, and denial-of-service attacks.</li>
                         </ul>
                     </div>
                 </div>
@@ -49,29 +49,29 @@ export const YourComponent = () => {
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q3: What is the maximum you can claim for car expenses?</div>
-                    <div className="answer">A3:
+                    <div className="answer"><strong>A3: </strong><p>
 
 You will be able to use the 2023/2024 per km rate to claim up to 5000 business kilometres you`ve driven throughout the 2023/2024 tax year as a tax deduction.
 
-Note that you won`t be able to claim other vehicle expenses, as the rate is meant to cover all running costs of your vehicle, including depreciation. A higher per km rate for the new tax year will mean you can get a higher deduction at tax time for the kilometres you travel for work.</div>
+Note that you won`t be able to claim other vehicle expenses, as the rate is meant to cover all running costs of your vehicle, including depreciation. A higher per km rate for the new tax year will mean you can get a higher deduction at tax time for the kilometres you travel for work.</p></div>
                 </div>
             </section>
 
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q4: What is 2023/2024 ATO cents per km rate?</div>
-                    <div className="answer">A4:
+                    <div className="answer"><strong>A4: </strong><p>
 
-The cents per km rate is set each year by the ATO. The newly confirmed rate for the 2023/2024 tax year is $0.85 per business-related kilometre. The rate is meant to cover all expenses of owning and running your vehicle for the business portion of its use.</div>
+The cents per km rate is set each year by the ATO. The newly confirmed rate for the 2023/2024 tax year is $0.85 per business-related kilometre. The rate is meant to cover all expenses of owning and running your vehicle for the business portion of its use.</p></div>
                 </div>
             </section>
 
             <section>
                 <div className="faq-item">
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q5: What does the cents per km cover?</div>
-                    <div className="answer">A5:
+                    <div className="answer"><strong>A5:</strong><p>
 
-The cents per kilometre rate is meant to cover all costs you've incurred driving your vehicle for business purposes. These include fixed costs such as road tax, insurance and depreciation, and variable costs such as fuel, maintenance and repairs and tyres.</div>
+The cents per kilometre rate is meant to cover all costs you've incurred driving your vehicle for business purposes. These include fixed costs such as road tax, insurance and depreciation, and variable costs such as fuel, maintenance and repairs and tyres.</p></div>
                 </div>
             </section>
 
@@ -80,7 +80,7 @@ The cents per kilometre rate is meant to cover all costs you've incurred driving
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q6: How to calculate deduction for vehicle expenses?</div>
                     <div className="answer">
 
-                        <p>A6: You can use either of 2 methods to calculate deductions for car expenses:</p>
+                        <strong>A6:</strong><p> You can use either of 2 methods to calculate deductions for car expenses:</p>
 
                         <ul>
                             <li><strong>Cents per kilometre method</strong></li>
@@ -97,7 +97,7 @@ The cents per kilometre rate is meant to cover all costs you've incurred driving
                     <div className="question" onClick={(e) => toggleAnswer(e.target)}>Q7: What are work-related travels?</div>
                     <div className="answer">
 
-                        <p>A7: You can claim a tax deduction for the cost of transport on trips to:</p>
+                        <strong>A7:</strong><p> You can claim a tax deduction for the cost of transport on trips to:</p>
 
                         <ul>
                             <li>Perform your work duties – for example, if you travel from your regular place of work to meet with a client</li>
