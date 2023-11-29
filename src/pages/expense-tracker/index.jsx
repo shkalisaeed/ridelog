@@ -8,7 +8,7 @@ import "./styles.css";
 import "./global.css";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase-config";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
 import { setUserId } from "firebase/analytics";

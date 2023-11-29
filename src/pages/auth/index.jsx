@@ -127,7 +127,7 @@ export const Auth = () => {
 
             <nav>
                 <ul className="top-nav">
-                <li><a href="">FAQs</a></li>
+                <li><Link to="/FAQ">FAQ</Link></li>
                     <li><a href="#">Our Mission</a></li>
                     <li><a href="#">Team</a></li>
                 </ul>
