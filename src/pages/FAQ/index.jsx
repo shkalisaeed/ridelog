@@ -12,6 +12,7 @@ export const YourComponent = () => {
 
     return (
         <>
+        <div className='FAQ'>
             <header>
                 <h1>FAQ Page</h1>
                 <nav>
@@ -109,6 +110,7 @@ The cents per kilometre rate is meant to cover all costs you've incurred driving
                     </div>
                 </div>
             </section>
+            </div>
         </>
     );
 }

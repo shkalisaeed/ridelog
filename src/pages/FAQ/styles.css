@@ -53,3 +53,16 @@ li {
 p {
   text-align: justify;
 }
+
+.FAQ {
+    background:  #102f4d;
+    color: #221e1e; /* White text color */
+    padding: 10px;
+    border-radius: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: large;
+}
+
