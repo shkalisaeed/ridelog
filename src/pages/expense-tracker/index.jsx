@@ -8,14 +8,14 @@ import "./styles.css";
 import "./global.css";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase-config";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
 import { setUserId } from "firebase/analytics";
 import Chart from 'chart.js/auto';
 
 
-//---FUNCTIONS START HERE--- 
+//---MAIN EXPENSE PAGE FUNCTION START HERE--- 
 
 export const ExpenseTracker = () => {
 
@@ -56,7 +56,25 @@ export const ExpenseTracker = () => {
    const [selectedVehicleRego, setSelectedVehicleRego] = useState("");
    const [totalExpenses, setTotalExpenses] = useState([]);
    const [selectedDate, setSelectedDate] = useState("");
-   const [selectedVehicleName, setSelectedVehicleName] = useState(""); 
+   const [selectedVehicleName, setSelectedVehicleName] = useState("");
+   const [welcomeMessages, setWelcomeMessages] = useState([
+      "Welcome to Ridelog.",
+      "Explore Different Options",
+      "To Manage Your Vehicle Expenses",
+      "& To Effectively Set Your Budget",
+      "Welcome to Ridelog.",
+   ]);
+   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
+
+   const [welcomeMessages2, setWelcomeMessages2] = useState([
+      "Welcome To Your Dashboard",
+      "Explore Visual Representations ",
+      "Of Your Vehicle Expenses Here..",
+      "Welcome To Your Dashboard",
+   ]);
+   const [currentMessageIndex2, setCurrentMessageIndex2] = useState(0);
+
 
 
    //const [expenseType, setExpenseType] = useState("Gas");
@@ -76,14 +94,6 @@ export const ExpenseTracker = () => {
       setSelectedVehicleExpenses([...selectedVehicleExpenses, newExpense]);
    };
 
-
-   const handleDisplayFleet = () => {
-      setIsDisplayingFleet(true);
-   };
-
-   const handleCloseFleet = () => {
-      setIsDisplayingFleet(false);
-   };
 
    const handleToggleRecentExpenses = () => {
       setIsRecentExpensesVisible(!isRecentExpensesVisible);
@@ -135,224 +145,275 @@ export const ExpenseTracker = () => {
       if (!selectedVehicle) return;
 
       setSelectedVehicleName(`${selectedVehicle.make} ${selectedVehicle.model}`);
-    
+
       const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
-    
+
       const totalExpensesByType = {};
       expenses.forEach((expense) => {
-        if (totalExpensesByType[expense.transactionType]) {
-          // Type already exists, add to the existing total
-          totalExpensesByType[expense.transactionType] += Number(expense.transactionAmount);
-        } else {
-          // Type doesn't exist, initialize the total
-          totalExpensesByType[expense.transactionType] = Number(expense.transactionAmount);
-        }
+         if (totalExpensesByType[expense.transactionType]) {
+            // Type already exists, add to the existing total
+            totalExpensesByType[expense.transactionType] += Number(expense.transactionAmount);
+         } else {
+            // Type doesn't exist, initialize the total
+            totalExpensesByType[expense.transactionType] = Number(expense.transactionAmount);
+         }
       });
-    
+
       const updatedTotalExpenses = Object.entries(totalExpensesByType).map(([type, total]) => ({
-        type,
-        total,
+         type,
+         total,
       }));
-    
+
       setTotalExpenses(updatedTotalExpenses);
+   };
+
+   const scrollToNewSection = () => {
+      const existingSection = document.getElementById("newSection");
+    
+      if (existingSection) {
+        existingSection.scrollIntoView({ behavior: "smooth" });
+      } else {
+        const newSection = document.createElement("div");
+        newSection.id = "newSection";
+        newSection.style.height = "2500px";
+        console.log("Setting height to 1500px:", newSection.style.height);
+        document.body.appendChild(newSection);
+    
+        setTimeout(() => {
+          newSection.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
     };
     
+ 
 
-    const updatePieChart = () => {
+
+   // Function to update the welcome message
+   const updateWelcomeMessage = () => {
+      setCurrentMessageIndex((prevIndex) =>
+         prevIndex < welcomeMessages.length - 1 ? prevIndex + 1 : prevIndex
+      );
+   };
+
+   // Effect to automatically update the welcome message
+   useEffect(() => {
+      const messageInterval = setInterval(() => {
+         updateWelcomeMessage();
+      }, 3000); // Change the interval time as needed
+
+      return () => clearInterval(messageInterval);
+   }, []);
+
+
+   // Function to update the welcome message
+   const updateWelcomeMessage2 = () => {
+      setCurrentMessageIndex2((prevIndex2) =>
+         prevIndex2 < welcomeMessages2.length - 1 ? prevIndex2 + 1 : prevIndex2
+      );
+   };
+
+   // Effect to automatically update the welcome message
+   useEffect(() => {
+      const messageInterval2 = setInterval(() => {
+         updateWelcomeMessage2();
+      }, 3000); // Change the interval time as needed
+
+      return () => clearInterval(messageInterval2);
+   }, []);
+
+
+   const updatePieChart = () => {
       const selectedVehicle = vehicles.find((vehicle) => vehicle.rego === selectedVehicleRego);
       if (!selectedVehicle) return;
 
       const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
-  
+
       // Update the selected vehicle's name in the pie chart title
       const chartTitle = `Expense Distribution of ${selectedVehicle.make} ${selectedVehicle.model}`;
-      
+
       const ctx = document.getElementById('pieChart').getContext('2d');
       if (!ctx) return;
-  
+
       // Check if there's an existing chart on the canvas
       const existingChart = Chart.getChart(ctx);
-    
+
       // Aggregate expenses by type
       const aggregatedExpenses = expenses.reduce((acc, expense) => {
-        const existingExpense = acc.find((e) => e.type === expense.transactionType);
-        if (existingExpense) {
-          existingExpense.total += parseFloat(expense.transactionAmount);
-        } else {
-          acc.push({
-            type: expense.transactionType,
-            total: parseFloat(expense.transactionAmount),
-          });
-        }
-        return acc;
+         const existingExpense = acc.find((e) => e.type === expense.transactionType);
+         if (existingExpense) {
+            existingExpense.total += parseFloat(expense.transactionAmount);
+         } else {
+            acc.push({
+               type: expense.transactionType,
+               total: parseFloat(expense.transactionAmount),
+            });
+         }
+         return acc;
       }, []);
-    
-      if (existingChart) {
-        // Update the existing chart's data
-        existingChart.data.labels = aggregatedExpenses.map((expense) => expense.type);
-        existingChart.data.datasets[0].data = aggregatedExpenses.map((expense) => expense.total);
-    
-        // Update the chart
-        existingChart.update();
-      } else {
-        // Create a new chart if there's no existing chart
-        const data = {
-          labels: aggregatedExpenses.map((expense) => expense.type),
-          datasets: [
-            {
-              data: aggregatedExpenses.map((expense) => expense.total),
-              backgroundColor: [
-                'rgba(106, 90, 205, 0.7)',
-                'rgba(54, 162, 235, 0.7)',
-                'rgba(255, 206, 86, 0.7)',
-                'rgba(175, 15, 238, 0.7)',
-                'rgba(153, 102, 255, 0.7)',
-              ],
-            },
-          ],
-        };
-    
-        const options = {
-          width: 30, // Adjust the width as needed
-          height: 30,
-          plugins: {
-            legend: {
-              position: 'bottom',
-            },
-        
-            datalabels: {
-              anchor: 'center',
-              align: 'center',
-              formatter: (value, context) => {
-                const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                const percentage = ((value / total) * 100).toFixed(1) + '%';
-                return percentage;
-              },
-            },
-          },
-        };
-    
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: data,
-          options: options,
-        });
-      }
-    };
-    
-//////////////////////////////////
 
-    const updatePieChartByDate = () => {
+      if (existingChart) {
+         // Update the existing chart's data
+         existingChart.data.labels = aggregatedExpenses.map((expense) => expense.type);
+         existingChart.data.datasets[0].data = aggregatedExpenses.map((expense) => expense.total);
+
+         // Update the chart
+         existingChart.update();
+      } else {
+         // Create a new chart if there's no existing chart
+         const data = {
+            labels: aggregatedExpenses.map((expense) => expense.type),
+            datasets: [
+               {
+                  data: aggregatedExpenses.map((expense) => expense.total),
+                  backgroundColor: [
+                     'rgba(106, 90, 205, 0.7)',
+                     'rgba(54, 162, 235, 0.7)',
+                     'rgba(255, 206, 86, 0.7)',
+                     'rgba(175, 15, 238, 0.7)',
+                     'rgba(153, 102, 255, 0.7)',
+                  ],
+               },
+            ],
+         };
+
+         const options = {
+            width: 30, // Adjust the width as needed
+            height: 30,
+            plugins: {
+               legend: {
+                  position: 'bottom',
+               },
+
+               datalabels: {
+                  anchor: 'center',
+                  align: 'center',
+                  formatter: (value, context) => {
+                     const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                     const percentage = ((value / total) * 100).toFixed(1) + '%';
+                     return percentage;
+                  },
+               },
+            },
+         };
+
+         new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: options,
+         });
+      }
+   };
+
+   //////////////////////////////////
+
+   const updatePieChartByDate = () => {
       const selectedVehicle = vehicles.find((vehicle) => vehicle.rego === selectedVehicleRego);
       if (!selectedVehicle) return;
-    
+
       const expenses = transactions.filter((transaction) => transaction.rego === selectedVehicleRego);
-    
+
       const ctx = document.getElementById('pieChart2').getContext('2d');
       if (!ctx) return;
-    
+
       // Check if there's an existing chart on the canvas
       const existingChart = Chart.getChart(ctx);
-    
+
       // Step 1: Filter expenses based on the selected date
       const expensesOnSelectedDate = selectedDate
-        ? expenses.filter((expense) => expense.transactionDate === selectedDate)
-        : expenses;
-    
+         ? expenses.filter((expense) => expense.transactionDate === selectedDate)
+         : expenses;
+
       // Step 2: Aggregate expenses by type
       const aggregatedExpenses = expensesOnSelectedDate.reduce((acc, expense) => {
-        const existingExpense = acc.find((e) => e.type === expense.transactionType);
-        if (existingExpense) {
-          existingExpense.total += parseFloat(expense.transactionAmount);
-        } else {
-          acc.push({
-            type: expense.transactionType,
-            total: parseFloat(expense.transactionAmount),
-          });
-        }
-        return acc;
+         const existingExpense = acc.find((e) => e.type === expense.transactionType);
+         if (existingExpense) {
+            existingExpense.total += parseFloat(expense.transactionAmount);
+         } else {
+            acc.push({
+               type: expense.transactionType,
+               total: parseFloat(expense.transactionAmount),
+            });
+         }
+         return acc;
       }, []);
-    
+
       if (existingChart) {
-        // Update the existing chart's data
-        existingChart.data.labels = aggregatedExpenses.map((expense) => expense.type);
-        existingChart.data.datasets[0].data = aggregatedExpenses.map((expense) => expense.total);
-    
-        // Update the chart
-        existingChart.update();
+         // Update the existing chart's data
+         existingChart.data.labels = aggregatedExpenses.map((expense) => expense.type);
+         existingChart.data.datasets[0].data = aggregatedExpenses.map((expense) => expense.total);
+
+         // Update the chart
+         existingChart.update();
       } else {
-        // Create a new chart if there's no existing chart
-        const data = {
-          labels: aggregatedExpenses.map((expense) => expense.type),
-          datasets: [
-            {
-              data: aggregatedExpenses.map((expense) => expense.total),
-              backgroundColor: [
-                'rgba(106, 90, 205, 0.7)',
-                'rgba(54, 162, 235, 0.7)',
-                'rgba(255, 206, 86, 0.7)',
-                'rgba(175, 15, 238, 0.7)',
-                'rgba(153, 102, 255, 0.7)',
-              ],
+         // Create a new chart if there's no existing chart
+         const data = {
+            labels: aggregatedExpenses.map((expense) => expense.type),
+            datasets: [
+               {
+                  data: aggregatedExpenses.map((expense) => expense.total),
+                  backgroundColor: [
+                     'rgba(106, 90, 205, 0.7)',
+                     'rgba(54, 162, 235, 0.7)',
+                     'rgba(255, 206, 86, 0.7)',
+                     'rgba(175, 15, 238, 0.7)',
+                     'rgba(153, 102, 255, 0.7)',
+                  ],
+               },
+            ],
+         };
+
+         const options = {
+            width: 30, // Adjust the width as needed
+            height: 30,
+            plugins: {
+               legend: {
+                  position: 'bottom',
+               },
+               title: {
+                  display: true,
+                  
+                  font: {
+                     size: 14,
+                  },
+               },
+               datalabels: {
+                  anchor: 'center',
+                  align: 'center',
+                  formatter: (value, context) => {
+                     const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                     const percentage = ((value / total) * 100).toFixed(1) + '%';
+                     return percentage;
+                  },
+               },
             },
-          ],
-        };
-    
-        const options = {
-          width: 30, // Adjust the width as needed
-          height: 30,
-          plugins: {
-            legend: {
-              position: 'bottom',
-            },
-            title: {
-              display: true,
-              text: 'Vehicle Expense Distribution',
-              font: {
-                size: 14,
-              },
-            },
-            datalabels: {
-              anchor: 'center',
-              align: 'center',
-              formatter: (value, context) => {
-                const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                const percentage = ((value / total) * 100).toFixed(1) + '%';
-                return percentage;
-              },
-            },
-          },
-        };
-    
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: data,
-          options: options,
-        });
+         };
+
+         new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: options,
+         });
       }
-    };
-    
-    
-    
-    
-    useEffect(() => {
+   };
+
+
+
+
+   useEffect(() => {
       updatePieChartByDate();
-    }, [transactions, selectedDate]);
+   }, [transactions, selectedDate]);
 
 
-      useEffect(() => {
-         updatePieChart();
-         updateTotalExpensesTable();
-      }, [transactions, selectedVehicleRego, vehicles, selectedDate, selectedVehicleName]); // Include selectedDate in the dependencies
+   useEffect(() => {
+      updatePieChart();
+      updateTotalExpensesTable();
+   }, [transactions, selectedVehicleRego, vehicles, selectedDate, selectedVehicleName]); // Include selectedDate in the dependencies
 
    //---END OF FUNCTIONS---
    return (
       <>
          <div className="expense-tracker">
-            <header>
-            
 
-            </header>
 
             <div className="profile">
                <div className="profile-photo-container">
@@ -363,21 +424,38 @@ export const ExpenseTracker = () => {
 
                   )}
                </div>
+               <h5>
+                  <div className="name">
+                     {name}
+                  </div>
+               </h5>
+               
+               <button className="dashbtn" onClick={scrollToNewSection}>Dashboard</button>
                <button className="sign-out-button" onClick={signUserOut}>
                   Sign Out
                </button>
             </div>
 
-
             <h2>
-               <div className="name">
-                  Welcome {name}
-               </div>
+               {welcomeMessages[currentMessageIndex].split(" ").map((word, index, array) => (
+                  <span key={index} className="typing-animation">
+                     {word.split("").map((char, charIndex) => (
+                        <span key={charIndex}>{char}</span>
+                     ))}
+                     {index === array.length - 1 ? "" : "\u00A0"} {/* Add a space if it's not the last word */}
+                  </span>
+               ))}
             </h2>
             <div className="add-vehicle" onSubmit={onSubmit2}>
-               <img src={logo} alt="RIDELOG Logo" style={{ width: "20%" }} />
-               <h3>Add Vehicle</h3>
+               <img src={logo} alt="RIDELOG Logo" style={{ width: "17%" }} />
+               
+               <h3>  
+              Add Vehicle</h3>
+              
                <form >
+                  
+                  
+                  <br/><br/>
                   <div className="form-group">
                      <label htmlFor="insurance">Car Make*:</label>
                      <input
@@ -542,40 +620,41 @@ export const ExpenseTracker = () => {
                         onChange={(e) => setUpdatedAt(e.target.value)}
                      />
                   </div>
+                  
                   <button type="submit" id="submit-button">Add Vehicle</button>
                   <button type="button" id="display-button" onClick={() => setIsDisplayingFleet(prevState => !prevState)}>
                      {isDisplayingFleet ? 'Hide Fleet' : 'Display Fleet'}
                   </button>
-<p></p>
-                  
+                  <p></p>
+
                   {isDisplayingFleet && (
-  <div className="fleet-modal">
-    <div className="fleet-modal-content">
-      <div className="center-table">
-        <table>
-          <thead>
-            <tr>
-              <th>No #</th>
-              <th>Make</th>
-              <th>Model</th>
-              <th>Registration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vehicles.map((vehicle, index) => (
-              <tr key={vehicle.rego}>
-                <td>{index + 1}</td>
-                <td>{vehicle.make}</td>
-                <td>{vehicle.model}</td>
-                <td>{vehicle.rego}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-)}
+                     <div className="fleet-modal">
+                        <div className="fleet-modal-content">
+                           <div className="center-table">
+                              <table>
+                                 <thead>
+                                    <tr>
+                                       <th>No #</th>
+                                       <th>Make</th>
+                                       <th>Model</th>
+                                       <th>Registration</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {vehicles.map((vehicle, index) => (
+                                       <tr key={vehicle.rego}>
+                                          <td>{index + 1}</td>
+                                          <td>{vehicle.make}</td>
+                                          <td>{vehicle.model}</td>
+                                          <td>{vehicle.rego}</td>
+                                       </tr>
+                                    ))}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                     </div>
+                  )}
 
                   <div id="notification" className="notification">
                      {isVehicleAdded && <p>Vehicle Added Successfully</p>}
@@ -583,6 +662,11 @@ export const ExpenseTracker = () => {
 
                </form>
             </div>
+            {
+            ///add vehicle form ends here////
+            }
+
+
             <div className="add-transaction" onSubmit={onSubmit}>
                <h3>Add Expense</h3>
                <form onSubmit={handleTransactionSubmit}>
@@ -654,9 +738,9 @@ export const ExpenseTracker = () => {
                   <p></p>
                   <div>
                      {isRecentExpensesVisible && (
-                        
+
                         <div class="center-table">
-                           
+
                            <table>
                               <thead>
                                  <tr>
@@ -685,61 +769,77 @@ export const ExpenseTracker = () => {
                   </div>
 
                </form>
+
             </div>
 
          </div>
 
-         <div className="form-group">
-        {/* Total Expenses Table */}
-       
 
-        {/* Pie Chart */}
-        <div className="pie-chart-container">
-        
-          <canvas id="pieChart" width="300" height="300"></canvas>
-        </div>
+         <div id="newSection">
+            {/* Button to scroll down to a new section */}
+            
 
-        <div className="total-expenses-container">
-        <h3>{`Expense Breakdown: ${selectedVehicleName}`}</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Total Expense</th>
-              </tr>
-            </thead>
-            <tbody>
-              {totalExpenses.map((expense, index) => (
-                <tr key={index}>
+            {/* Content of the new section goes here */}
+            <div className="new-section">
+               <h3>
+                  {welcomeMessages2[currentMessageIndex2].split(" ").map((word2, index2, array2) => (
+                     <span key={index2} className="typing-animation">
+                        {word2.split("").map((char2, charIndex2) => (
+                           <span key={charIndex2}>{char2}</span>
+                        ))}
+                        {index2 === array2.length - 1 ? "" : "\u00A0"} {/* Add a space if it's not the last word */}
+                     </span>
+                  ))}
+               </h3>
+               <div className="dashrow1">
+   {/* Pie Chart 1 */}
+   <div className="pie-chart-container">
+      <h4>{`Expense Breakdown: ${selectedVehicleName}`}</h4>
+      <canvas id="pieChart" width="300" height="300"></canvas>
+   </div>
+
+   {/* Total Expenses Table */}
+   <div className="total-expenses-container">
+      <table>
+         <thead>
+            <tr>
+               <th>Type</th>
+               <th>Total Expense</th>
+            </tr>
+         </thead>
+         <tbody>
+            {totalExpenses.map((expense, index) => (
+               <tr key={index}>
                   <td>{expense.type}</td>
                   <td>${Number(expense.total).toFixed(1)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div>
-        {/* Step 1: Add date input for user to select date */}
-        <label htmlFor="selectedDate">Select Date:</label>
-        <input
-          type="date"
-          id="selectedDate"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-        />
-      </div>
-        <div >
-  <canvas id="pieChart2" width="300" height="300"></canvas>
+               </tr>
+            ))}
+         </tbody>
+      </table>
+   </div>
+
+   {/* Pie Chart 2 */}
+   <div className="pie-chart-container">
+      <label htmlFor="selectedDate">Select Date:</label>
+      <input
+         type="date"
+         id="selectedDate"
+         value={selectedDate}
+         onChange={(e) => setSelectedDate(e.target.value)}
+      />
+      <canvas id="pieChart2" width="300" height="300"></canvas>
+   </div>
 </div>
 
+            </div>
+         </div>
 
-      </div>
-
+         {/* Your existing code */}
          <footer className="footer">
             {/* Your footer content goes here */}
             <p>&copy; 2023 Ridelog (team DB). All rights reserved.</p>
          </footer>
-
       </>
    );
 };
+
