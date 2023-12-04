@@ -76,7 +76,6 @@ export const ExpenseTracker = () => {
    const [currentMessageIndex2, setCurrentMessageIndex2] = useState(0);
 
 
-
    //const [expenseType, setExpenseType] = useState("Gas");
 
    const handleTransactionSubmit = (e) => {
@@ -169,24 +168,21 @@ export const ExpenseTracker = () => {
 
    const scrollToNewSection = () => {
       const existingSection = document.getElementById("newSection");
-    
-      if (existingSection) {
-        existingSection.scrollIntoView({ behavior: "smooth" });
-      } else {
-        const newSection = document.createElement("div");
-        newSection.id = "newSection";
-        newSection.style.height = "2500px";
-        console.log("Setting height to 1500px:", newSection.style.height);
-        document.body.appendChild(newSection);
-    
-        setTimeout(() => {
-          newSection.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-      }
-    };
-    
- 
 
+      if (existingSection) {
+         existingSection.scrollIntoView({ behavior: "smooth" });
+      } else {
+         const newSection = document.createElement("div");
+         newSection.id = "newSection";
+         newSection.style.height = "2500px";
+         console.log("Setting height to 1500px:", newSection.style.height);
+         document.body.appendChild(newSection);
+
+         setTimeout(() => {
+            newSection.scrollIntoView({ behavior: "smooth" });
+         }, 100);
+      }
+   };
 
    // Function to update the welcome message
    const updateWelcomeMessage = () => {
@@ -371,7 +367,7 @@ export const ExpenseTracker = () => {
                },
                title: {
                   display: true,
-                  
+
                   font: {
                      size: 14,
                   },
@@ -395,9 +391,6 @@ export const ExpenseTracker = () => {
          });
       }
    };
-
-
-
 
    useEffect(() => {
       updatePieChartByDate();
@@ -429,7 +422,7 @@ export const ExpenseTracker = () => {
                      {name}
                   </div>
                </h5>
-               
+
                <button className="dashbtn" onClick={scrollToNewSection}>Dashboard</button>
                <button className="sign-out-button" onClick={signUserOut}>
                   Sign Out
@@ -448,14 +441,14 @@ export const ExpenseTracker = () => {
             </h2>
             <div className="add-vehicle" onSubmit={onSubmit2}>
                <img src={logo} alt="RIDELOG Logo" style={{ width: "17%" }} />
-               
-               <h3>  
-              Add Vehicle</h3>
-              
+
+               <h3>
+                  Add Vehicle</h3>
+
                <form >
-                  
-                  
-                  <br/><br/>
+
+
+                  <br /><br />
                   <div className="form-group">
                      <label htmlFor="insurance">Car Make*:</label>
                      <input
@@ -620,7 +613,7 @@ export const ExpenseTracker = () => {
                         onChange={(e) => setUpdatedAt(e.target.value)}
                      />
                   </div>
-                  
+
                   <button type="submit" id="submit-button">Add Vehicle</button>
                   <button type="button" id="display-button" onClick={() => setIsDisplayingFleet(prevState => !prevState)}>
                      {isDisplayingFleet ? 'Hide Fleet' : 'Display Fleet'}
@@ -638,15 +631,21 @@ export const ExpenseTracker = () => {
                                        <th>Make</th>
                                        <th>Model</th>
                                        <th>Registration</th>
+                                       <th>Odo Reading</th>
+                                       <th>Insurance</th>
+                                       <th>Cover Type</th>
                                     </tr>
                                  </thead>
                                  <tbody>
                                     {vehicles.map((vehicle, index) => (
                                        <tr key={vehicle.rego}>
                                           <td>{index + 1}</td>
-                                          <td>{vehicle.make}</td>
+                                          <td>{vehicle.make} </td>
                                           <td>{vehicle.model}</td>
                                           <td>{vehicle.rego}</td>
+                                          <td>{vehicle.odo_reading}</td>
+                                          <td>{vehicle.insurance_provider}</td>
+                                          <td>{vehicle.insurance_type}</td>
                                        </tr>
                                     ))}
                                  </tbody>
@@ -663,9 +662,8 @@ export const ExpenseTracker = () => {
                </form>
             </div>
             {
-            ///add vehicle form ends here////
+               ///add vehicle form ends here////
             }
-
 
             <div className="add-transaction" onSubmit={onSubmit}>
                <h3>Add Expense</h3>
@@ -711,8 +709,6 @@ export const ExpenseTracker = () => {
                         required
                         onChange={(e) => setAmount(e.target.value)}
                      />
-
-
                      <label htmlFor="Expense">Description:</label>
                      <textarea
                         placeholder=""
@@ -730,7 +726,7 @@ export const ExpenseTracker = () => {
                   </div>
                   <button type="submit" id="submit-button">Add Expense</button>
                   <button type="button" onClick={handleToggleRecentExpenses}>
-                     {isRecentExpensesVisible ? 'Hide Recent Expenses' : 'Show Recent Expenses'}
+                     {isRecentExpensesVisible ? 'Hide Expenses' : 'Show Expenses'}
                   </button>
                   <div id="notification" className="notification">
                      {isTransactionAdded && <p>Transaction Added Successfully</p>}
@@ -738,22 +734,26 @@ export const ExpenseTracker = () => {
                   <p></p>
                   <div>
                      {isRecentExpensesVisible && (
-
-                        <div class="center-table">
-
+                        <div class="center-table" style={{ maxHeight:"160px", overflowY:"auto" }}>
                            <table>
                               <thead>
                                  <tr>
-                                    <th>Type</th>
+                                    <th>Car</th>
+                                    <th>Rego</th>
+                                    <th>Expense Type</th>
                                     <th>Amount</th>
                                     <th>Date</th>
                                  </tr>
                               </thead>
                               <tbody>
-                                 {transactions.slice(-3).map((transaction) => {
-                                    const { transactionType, transactionAmount, transactionDate } = transaction;
+                                 {transactions.map((transaction, index) => {
+                                    const { transactionType, transactionAmount, transactionDate, rego } = transaction;
+                                    const vehicle = vehicles.find((v) => v.rego === rego);
                                     return (
-                                       <tr key={setUserId}>
+                                       <tr key={index}>
+                                          <td>{vehicle ? vehicle.make : 'N/A'} {vehicle ? vehicle.model : 'N/A'}</td>
+                                       
+                                          <td>{rego}</td>
                                           <td>{transactionType}</td>
                                           <td>$ {transactionAmount}</td>
                                           <td>{transactionDate}</td>
@@ -761,12 +761,12 @@ export const ExpenseTracker = () => {
                                     );
                                  })}
                               </tbody>
+
                            </table>
                         </div>
                      )}
-
-
                   </div>
+
 
                </form>
 
@@ -777,7 +777,7 @@ export const ExpenseTracker = () => {
 
          <div id="newSection">
             {/* Button to scroll down to a new section */}
-            
+
 
             {/* Content of the new section goes here */}
             <div className="new-section">
@@ -792,45 +792,44 @@ export const ExpenseTracker = () => {
                   ))}
                </h3>
                <div className="dashrow1">
-   {/* Pie Chart 1 */}
-   <div className="pie-chart-container">
-      <h4>{`Expense Breakdown: ${selectedVehicleName}`}</h4>
-      <canvas id="pieChart" width="300" height="300"></canvas>
-   </div>
+                  {/* Pie Chart 1 */}
+                  <div className="pie-chart-container">
+                     <h4>{`Expense Breakdown: ${selectedVehicleName}`}</h4>
+                     <canvas id="pieChart" width="300" height="300"></canvas>
+                  </div>
 
-   {/* Total Expenses Table */}
-   <div className="total-expenses-container">
-      <table>
-         <thead>
-            <tr>
-               <th>Type</th>
-               <th>Total Expense</th>
-            </tr>
-         </thead>
-         <tbody>
-            {totalExpenses.map((expense, index) => (
-               <tr key={index}>
-                  <td>{expense.type}</td>
-                  <td>${Number(expense.total).toFixed(1)}</td>
-               </tr>
-            ))}
-         </tbody>
-      </table>
-   </div>
+                  {/* Total Expenses Table */}
+                  <div className="total-expenses-container">
+                     <table>
+                        <thead>
+                           <tr>
+                              <th>Type</th>
+                              <th>Total Expense</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {totalExpenses.map((expense, index) => (
+                              <tr key={index}>
+                                 <td>{expense.type}</td>
+                                 <td>${Number(expense.total).toFixed(1)}</td>
+                              </tr>
+                           ))}
+                        </tbody>
+                     </table>
+                  </div>
 
-   {/* Pie Chart 2 */}
-   <div className="pie-chart-container">
-      <label htmlFor="selectedDate">Select Date:</label>
-      <input
-         type="date"
-         id="selectedDate"
-         value={selectedDate}
-         onChange={(e) => setSelectedDate(e.target.value)}
-      />
-      <canvas id="pieChart2" width="300" height="300"></canvas>
-   </div>
-</div>
-
+                  {/* Pie Chart 2 */}
+                  <div className="pie-chart-container">
+                     <label htmlFor="selectedDate">Select Date:</label>
+                     <input
+                        type="date"
+                        id="selectedDate"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                     />
+                     <canvas id="pieChart2" width="300" height="300"></canvas>
+                  </div>
+               </div>
             </div>
          </div>
 
