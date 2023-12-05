@@ -1,0 +1,52 @@
+/* styles.css */
+
+.Mission {
+  margin: 0 auto;
+  padding: 20px;
+  background:  #102f4d;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: white;
+}
+
+nav button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+nav button:hover {
+  background-color: #45a049;
+}
+
+.vision-mission-content {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #333;
+}
+
+p {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Optional: Add responsive styles for smaller screens */
+@media (max-width: 600px) {
+  .Mission {
+    padding: 10px;
+  }
+}
