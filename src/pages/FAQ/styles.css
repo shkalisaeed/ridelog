@@ -56,6 +56,15 @@ text-align: left;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+nav button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 h1 {
   font-size: large;
   background-image: none;
