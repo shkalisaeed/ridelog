@@ -129,7 +129,7 @@ export const Auth = () => {
                 <ul className="top-nav">
                 <li><Link to="/FAQ">FAQ</Link></li>
                     <li><a href="/mission">Our Mission</a></li>
-                    <li><a href="#">Team</a></li>
+                    <li><a href="/team">Team</a></li>
                 </ul>
             </nav>
             <img src={logo} alt="RIDELOG Logo" style={{ width: "50%" }} />
