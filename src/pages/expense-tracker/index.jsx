@@ -11,7 +11,6 @@ import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import logo from "./logo_r_new.png";
 import defaultprofilepic from "./user-icon.png"
-import { setUserId } from "firebase/analytics";
 import Chart from 'chart.js/auto';
 
 
@@ -20,9 +19,11 @@ import Chart from 'chart.js/auto';
 export const ExpenseTracker = () => {
 
    const { addTransaction } = useAddTransaction();
-   const { transactions } = useGetTransactions();
+   
+   const { transactions, setTransactions, deleteTransaction} = useGetTransactions();
 
    const { addVehicle } = useAddVehicle();
+   
    const { name, profilePhoto } = useGetUserInfo();
    const navigate = useNavigate();
 
@@ -39,7 +40,8 @@ export const ExpenseTracker = () => {
    const [marketValue, setMarketValue] = useState("");
    const [updatedAt, setUpdatedAt] = useState("");
    const [selectedVehicleExpenses, setSelectedVehicleExpenses] = useState([]);
-   const { vehicles, loadingVehicles } = useGetVehicles(); // Include loadingVehicles from useGetVehicles
+   const { vehicles, loadingVehicles, deleteVehicle } = useGetVehicles(); // Include loadingVehicles from useGetVehicles
+   
    const [isRecentExpensesVisible, setIsRecentExpensesVisible] = useState(true);
 
 
@@ -74,10 +76,7 @@ export const ExpenseTracker = () => {
       "Welcome To Your Dashboard",
    ]);
    const [currentMessageIndex2, setCurrentMessageIndex2] = useState(0);
-
-
    //const [expenseType, setExpenseType] = useState("Gas");
-
    const handleTransactionSubmit = (e) => {
       e.preventDefault();
 
@@ -92,6 +91,26 @@ export const ExpenseTracker = () => {
       };
       setSelectedVehicleExpenses([...selectedVehicleExpenses, newExpense]);
    };
+
+   //delete expense function
+   const handleDeleteExpense = async (index) => {
+      try {
+        const transactionIdToDelete = transactions[index].id;
+        await deleteTransaction(transactionIdToDelete);
+      } catch (error) {
+        console.error("Error deleting expense:", error.message);
+      }
+    };
+
+//delete car function
+    const handleDeleteVehicle = async (index) => {
+      try {
+        const vehicleIdToDelete = vehicles[index].id;
+        await deleteVehicle(vehicleIdToDelete);
+      } catch (error) {
+        console.error("Error deleting vehicle:", error.message);
+      }
+    };
 
 
    const handleToggleRecentExpenses = () => {
@@ -634,6 +653,7 @@ export const ExpenseTracker = () => {
                                        <th>Odo Reading</th>
                                        <th>Insurance</th>
                                        <th>Cover Type</th>
+                                    
                                     </tr>
                                  </thead>
                                  <tbody>
@@ -646,6 +666,7 @@ export const ExpenseTracker = () => {
                                           <td>{vehicle.odo_reading}</td>
                                           <td>{vehicle.insurance_provider}</td>
                                           <td>{vehicle.insurance_type}</td>
+                                        
                                        </tr>
                                     ))}
                                  </tbody>
@@ -722,19 +743,23 @@ export const ExpenseTracker = () => {
 
                         onChange={(e) => setTransactionDate(e.target.value)}
                      />
-
                   </div>
+
                   <button type="submit" id="submit-button">Add Expense</button>
                   <button type="button" onClick={handleToggleRecentExpenses}>
                      {isRecentExpensesVisible ? 'Hide Expenses' : 'Show Expenses'}
                   </button>
+
+                  </form>
+                  
+                 
                   <div id="notification" className="notification">
                      {isTransactionAdded && <p>Transaction Added Successfully</p>}
                   </div>
                   <p></p>
                   <div>
                      {isRecentExpensesVisible && (
-                        <div class="center-table" style={{ maxHeight:"160px", overflowY:"auto" }}>
+                        <div className="center-table" style={{ maxHeight: "160px", overflowY: "auto" }}>
                            <table>
                               <thead>
                                  <tr>
@@ -743,6 +768,7 @@ export const ExpenseTracker = () => {
                                     <th>Expense Type</th>
                                     <th>Amount</th>
                                     <th>Date</th>
+                                    <th>Action</th> {/* Add a new column for delete button */}
                                  </tr>
                               </thead>
                               <tbody>
@@ -752,24 +778,22 @@ export const ExpenseTracker = () => {
                                     return (
                                        <tr key={index}>
                                           <td>{vehicle ? vehicle.make : 'N/A'} {vehicle ? vehicle.model : 'N/A'}</td>
-                                       
                                           <td>{rego}</td>
                                           <td>{transactionType}</td>
                                           <td>$ {transactionAmount}</td>
                                           <td>{transactionDate}</td>
+                                          <td>
+                                             {/* Add a delete button with an onClick handler */}
+                                             <button onClick={() => handleDeleteExpense(index)}>Delete</button>
+                                          </td>
                                        </tr>
                                     );
                                  })}
                               </tbody>
-
                            </table>
                         </div>
                      )}
                   </div>
-
-
-               </form>
-
             </div>
 
          </div>
