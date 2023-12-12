@@ -1,82 +1,91 @@
 /* styles.css */
 
 body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-.TeamPage {
-  background-color: #102f4d;
-  color: #333;
-  padding: 20px;
-  font-family: 'Arial', sans-serif;
-}
-
-header {
-  background-color: #333;
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-}
-
-nav {
-  margin-top: 10px;
-}
-
-button {
-  background-color: #0056b3;
-  color: #fff;
-  padding: 8px 12px;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #ddd;
-}
-
-section {
-  margin-top: 20px;
-}
-
-.team-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  max-width: 1200px; /* Set a maximum width for the team content */
-  margin: 0 auto; /* Center the team content horizontally */
-}
-
-.team-member {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin: 15px;
-  padding: 20px;
-  width: 300px;
-  text-align: justify;
-}
-
-/* styles.css */
-
-/* ... (previous styles) */
-
-.team-content {
-  /* Your existing styles for team-content */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.team-grid {
-  /* Your existing styles for team-grid */
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px;
-}
-
-.center-bottom {
-  grid-column: span 2;
-  text-align: justify;
-}
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .TeamPage {
+    background-color: #102f4d;
+    color: #333;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  header {
+   
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  nav {
+    margin-top: 10px;
+  }
+  
+  .TeamPage button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 7px 17px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .TeamPage button:hover {
+    background-color: #0056b3;
+  }
+  
+  .vision-mission-content {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  section {
+    margin-top: 20px;
+  }
+  
+  .team-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 1200px; /* Set a maximum width for the team content */
+    margin: 0 auto; /* Center the team content horizontally */
+  }
+  
+  .team-member {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 15px;
+    padding: 20px;
+    width: 300px;
+    text-align: justify;
+  }
+  
+  /* styles.css */
+  
+  /* ... (previous styles) */
+  
+  .team-content {
+    /* Your existing styles for team-content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .team-grid {
+    /* Your existing styles for team-grid */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
+  
+  .center-bottom {
+    grid-column: span 2;
+    text-align: justify;
+  }
