@@ -14,7 +14,7 @@ export const YourComponent = () => {
         <>
         <div className='FAQ'>
             <header>
-                <h1>FAQ Page</h1>
+                <h1>FAQ's   &nbsp;PAGE</h1>
                 <nav>
                     <button onClick={() => navigate(-1)}>Return</button>
                 </nav>
