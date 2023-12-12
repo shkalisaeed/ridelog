@@ -8,7 +8,7 @@ export const Team = () => {
     return (
         <div className='TeamPage'>
             <header>
-                <h1>RideLog Team Page</h1>
+                <h1>TEAM's  &nbsp;PAGE</h1>
                 <nav>
                     <button onClick={() => navigate(-1)}>Return</button>
                 </nav>
@@ -16,7 +16,7 @@ export const Team = () => {
 
             <section>
                 <div className="team-content">
-                    <h2>Meet the Team</h2>
+                    <h3>Meet the Team</h3>
 
                     <div className='team-grid'>
 
