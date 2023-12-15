@@ -1,21 +1,21 @@
 /* styles.css */
 
 .Mission {
-  margin: 0 auto;
+  margin: 0;
   padding: 20px;
   background: #102f4d; /* Fallback color */
-
+  height: 100vh;
 }
-  
+    
   header {
     text-align: center;
     margin-bottom: 20px;
   }
-  
+
   h1 {
     color: white;
   }
-  
+
   .Mission button {
     background-color: #007bff;
     color: #fff;
@@ -25,11 +25,11 @@
     cursor: pointer;
     font-size: 16px;
   }
-  
+
   .Mission button:hover {
     background-color: #0056b3;
   }
-  
+
   .vision-mission-content {
     background-color: #f9f9f9;
     padding: 20px;
@@ -37,12 +37,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
 
- 
-  
-  /* Optional: Add responsive styles for smaller screens */
-  @media (max-width: 600px) {
-    .Mission {
-      padding: 10px;
-    }
-  }
-  
+
+
+
+
